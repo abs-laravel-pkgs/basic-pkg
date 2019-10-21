@@ -5,10 +5,7 @@
     "require":
     {},
     "require-dev":
-    {
-        "fzaninotto/faker": "^1.9@dev",
-        "laravel/framework": "^7.0@dev"
-    },
+    {},
     "authors": [
     {
         "name": "Abdul",
