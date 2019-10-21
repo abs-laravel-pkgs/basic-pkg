@@ -11,6 +11,7 @@ class EntityController extends Controller {
 	}
 
 	public function entityList($entity_type_id) {
+		return view('basic::master.entity.list');
 		dd('Entity List');
 	}
 }
