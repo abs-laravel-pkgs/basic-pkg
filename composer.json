@@ -1,0 +1,36 @@
+{
+    "name": "abs/basic",
+    "description": "For Company, Attachment, Entity Type, Entities, Config Type, Configs, Addresses and Permission",
+    "type": "library",
+    "require":
+    {
+        "zizaco/entrust": "dev-master"
+    },
+    "require-dev":
+    {
+        "fzaninotto/faker": "^1.9@dev",
+        "laravel/framework": "^7.0@dev"
+    },
+    "authors": [
+    {
+        "name": "Abdul",
+        "email": "abdulpro@gmail.com"
+    }],
+    "minimum-stability": "dev",
+    "extra":
+    {
+        "laravel":
+        {
+            "providers": [
+                "Abs\\Basic\\BasicServiceProvider"
+            ]
+        }
+    },
+    "autoload":
+    {
+        "psr-4":
+        {
+            "Abs\\Basic\\": "src/"
+        }
+    }
+}
