@@ -33,15 +33,16 @@ class AuthController extends Controller {
 				}
 			}
 		}
-		$user = User::with([
-			'entity',
-		])
-			->find(Auth::user()->id);
-
-		// $user = Auth::user();
+		// $user = User::with([
+		// 	'entity',
+		// ])
+		// 	->find(Auth::user()->id);
+		// dd($user);
+		$user = Auth::user();
 		$user->permissions = $user->perms();
 		$user->token = $user->createToken('mobile_v2')->accessToken;
 		$user->entity;
+		// $user->entity;
 		return response()->json([
 			'success' => true,
 			'user' => $user,

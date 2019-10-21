@@ -1,7 +1,5 @@
 <?php
 
-// Route::post('basic/api/login', 'Abs\Basic\API\AuthController@login');
-
 Route::group(['namespace' => 'Abs\Basic\API', 'middleware' => ['api']], function () {
 	Route::group(['prefix' => 'basic/api'], function () {
 
