@@ -29,6 +29,27 @@ class Entity extends Model {
 			}
 
 		}
+	}
+
+	public static function createMultipleEntityFromCollection($items, $company_id, $admin, $entity_type_id, $name) {
+		foreach ($items as $key => $item) {
+			try {
+				if (!$item->{$name}) {
+					// dump('empty main_category_name');
+					continue;
+				}
+
+				$record = Entity::firstOrNew([
+					'entity_type_id' => $entity_type_id,
+					'company_id' => $company_id,
+					'name' => $item->{$name},
+				]);
+				$record->created_by_id = $admin->id;
+				$record->save();
+			} catch (Exception $e) {
+				dd($e);
+			}
+		}
 
 	}
 

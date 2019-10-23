@@ -41,24 +41,28 @@ class Company extends Model {
 		return $this->hasMany('App\ShippingMethod');
 	}
 
+	public function paymentMethods() {
+		return $this->hasMany('App\PaymentMethod');
+	}
+
 	public function activeSubstances() {
-		return $this->hasMany('App\Abs\Entity')->where('entity_type_id', 1);
+		return $this->hasMany('Abs\Basic\Entity')->where('entity_type_id', 1);
 	}
 
 	public function drugCategories() {
-		return $this->hasMany('App\Abs\Entity')->where('entity_type_id', 2);
+		return $this->hasMany('Abs\Basic\Entity')->where('entity_type_id', 2);
 	}
 
 	public function manufacturers() {
-		return $this->hasMany('App\Abs\Entity')->where('entity_type_id', 3);
+		return $this->hasMany('Abs\Basic\Entity')->where('entity_type_id', 3);
 	}
 
 	public function packageTypes() {
-		return $this->hasMany('App\Abs\Entity')->where('entity_type_id', 4);
+		return $this->hasMany('Abs\Basic\Entity')->where('entity_type_id', 4);
 	}
 
 	public function strengthTypes() {
-		return $this->hasMany('App\Abs\Entity')->where('entity_type_id', 5);
+		return $this->hasMany('Abs\Basic\Entity')->where('entity_type_id', 5);
 	}
 
 	//STATIC METHOD
@@ -73,9 +77,7 @@ class Company extends Model {
 
 		//CART
 		$cart = Cart::getCart();
-		// dd($cart);
 		$data['cart_summary'] = $cart;
-
 		return $data;
 	}
 }
