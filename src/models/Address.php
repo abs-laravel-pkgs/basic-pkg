@@ -5,15 +5,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class Address extends Model {
 	protected $table = 'addresses';
+	public $timestamps = false;
 	protected $fillable = [
-		'code',
 		'name',
-		'address_id',
-		'logo_id',
-		'contact_number',
-		'email',
-		'created_by_id',
-		'updated_by_id',
-		'deleted_by_id',
+		'address_line_1',
+		'address_line_2',
+		'state_id',
+		'city_id',
+		'country_id',
+		'pincode',
 	];
 }

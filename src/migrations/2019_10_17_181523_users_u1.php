@@ -18,13 +18,14 @@ class UsersU1 extends Migration {
 			$table->unsignedInteger('user_type_id')->after('company_id');
 			$table->unsignedInteger('entity_id')->nullable()->after('user_type_id');
 			$table->string('first_name', 32)->nullable()->after('entity_id');
-			$table->string('last_name', 32)->after('first_name');
+			$table->string('last_name', 32)->nullable()->after('first_name');
 			$table->string('username', 32)->after('last_name');
-			$table->string('mobile_number', 12)->after('email');
+			$table->string('mobile_number', 12)->nullable()->after('email');
 			$table->boolean('force_password_reset')->default(0)->after('password');
-			$table->string('imei', 64)->after('force_password_reset');
-			$table->string('otp', 6)->after('imei');
-			$table->string('mpin', 4)->after('otp');
+			$table->boolean('has_mobile_login')->after('force_password_reset');
+			$table->string('imei', 64)->nullable()->after('has_mobile_login');
+			$table->string('otp', 6)->nullable()->after('imei');
+			$table->string('mpin', 4)->nullable()->after('otp');
 			$table->unsignedInteger('profile_image_id')->nullable()->after('mpin');
 			$table->unsignedInteger('created_by_id')->nullable()->after('remember_token');
 			$table->unsignedInteger('updated_by_id')->nullable()->after('created_by_id');
@@ -68,6 +69,7 @@ class UsersU1 extends Migration {
 			$table->dropColumn('username');
 			$table->dropColumn('mobile_number');
 			$table->dropColumn('force_password_reset');
+			$table->dropColumn('has_mobile_login');
 			$table->dropColumn('imei');
 			$table->dropColumn('otp');
 			$table->dropColumn('mpin');
