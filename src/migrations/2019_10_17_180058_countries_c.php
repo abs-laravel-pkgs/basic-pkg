@@ -16,6 +16,7 @@ class CountriesC extends Migration {
 			$table->string('code', 2);
 			$table->string('iso_code', 3);
 			$table->string('name', 64);
+			$table->boolean('has_state_list')->default(0);
 			$table->unsignedInteger('created_by_id')->nullable();
 			$table->unsignedInteger('updated_by_id')->nullable();
 			$table->unsignedInteger('deleted_by_id')->nullable();

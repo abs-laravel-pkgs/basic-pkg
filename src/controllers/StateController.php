@@ -23,10 +23,18 @@ class StateController extends Controller {
 			], $this->successStatus);
 		}
 
-		$this->data['success'] = true;
-		$this->data['state_list'] = State::getStates($r->all());
+		$query = State::from('states');
 
-		return response()->json($this->data);
+		if ($r->country_id) {
+			$country = Country::find($r->country_id);
+			if (!$country) {
+				return response()->json(['success' => false, 'errors' => ['Invalid country']]);
+			}
+			$query->where('country_id', $country->id);
+		}
+
+		$states = $query->get();
+		return response()->json(['success' => true, 'states' => $states]);
 	}
 
 }
