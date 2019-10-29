@@ -6,9 +6,8 @@ use Zizaco\Entrust\EntrustPermission;
 
 class Permission extends EntrustPermission {
 	protected $fillable = [
-		'mobile_menu',
+		'is_for_mobile',
 		'parent_id',
-		'mobile_name',
 		'display_order',
 		'name',
 		'display_name',
