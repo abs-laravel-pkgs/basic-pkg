@@ -42,7 +42,7 @@ class AuthController extends Controller {
 		$user = Auth::user();
 		$user->permissions = $user->perms();
 		$user->token = $user->createToken('mobile_v2')->accessToken;
-		$user->entity;
+		$user->entity();
 		// $user->entity;
 		return response()->json([
 			'success' => true,
