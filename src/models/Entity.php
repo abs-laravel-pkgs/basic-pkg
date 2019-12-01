@@ -2,11 +2,13 @@
 
 namespace Abs\Basic;
 
+use Abs\Basic\Traits\BasicTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Entity extends Model {
 	use SoftDeletes;
+	use BasicTrait;
 	protected $table = 'entities';
 	protected $fillable = [
 		'id',
@@ -50,7 +52,46 @@ class Entity extends Model {
 				dd($e);
 			}
 		}
-
 	}
 
+	public static function createFromObject($record_data, $company = null) {
+
+		$errors = [];
+		if (!$company) {
+			$company = Company::where('code', $record_data->company_code)->first();
+		}
+		if (!$company) {
+			dump('Invalid Company : ' . $record_data->company_code);
+			return;
+		}
+
+		$admin = $company->admin();
+		if (!$admin) {
+			dump('Default Admin user not found');
+			return;
+		}
+
+		$entity_type = EntityType::where([
+			'name' => $record_data->entity_type,
+		])->first();
+		if (!$entity_type) {
+			dump('Invalid entity_type : ' . $record_data->entity_type);
+		}
+
+		if (count($errors) > 0) {
+			dump($errors);
+			return;
+		}
+
+		$record = self::firstOrNew([
+			'company_id' => $company->id,
+			'entity_type_id' => $entity_type->id,
+			'name' => $record_data->name,
+		]);
+		$record->created_by_id = $admin->id;
+		if ($record_data->status != 1) {
+			$record->deleted_at = date('Y-m-d');
+		}
+		$record->save();
+	}
 }
