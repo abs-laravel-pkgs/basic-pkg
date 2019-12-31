@@ -11,6 +11,10 @@ class State extends Model {
 		'country_id',
 	];
 
+	public function country() {
+		return $this->belongsTo('Abs\Basic\Country');
+	}
+
 	public static function getStates($params) {
 		$query = State::select('id', 'code', 'name', 'country_id')->orderBy('name');
 		if ($params['country_id']) {
