@@ -1,5 +1,5 @@
 {
-    "name": "abs/basic",
+    "name": "abs/basic-pkg",
     "description": "For Company, Attachment, Entity Type, Entities, Config Type, Configs, Addresses and Permission",
     "type": "library",
     "require":

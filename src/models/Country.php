@@ -16,4 +16,19 @@ class Country extends Model {
 
 		return $country_list;
 	}
+
+	public static function createMultipleFromArray($records) {
+		foreach ($records as $key => $data) {
+			try {
+				$data = $data->toArray();
+				$record = self::firstOrNew([
+					'code' => $data['code'],
+				]);
+				$record->fill($data);
+				$record->save();
+			} catch (\Exception $e) {
+				dump($data, $e->getMessage());
+			}
+		}
+	}
 }

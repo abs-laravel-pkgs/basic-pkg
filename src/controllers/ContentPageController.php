@@ -6,7 +6,7 @@ use App\Category;
 use App\Http\Controllers\Controller;
 use App\Index;
 
-class MasterController extends Controller {
+class ContentPageController extends Controller {
 
 	private $company_id;
 
