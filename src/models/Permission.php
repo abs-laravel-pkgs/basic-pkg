@@ -2,9 +2,11 @@
 
 namespace Abs\Basic;
 
+use Abs\HelperPkg\Traits\PermissionTrait;
 use Zizaco\Entrust\EntrustPermission;
 
 class Permission extends EntrustPermission {
+	use PermissionTrait;
 	protected $fillable = [
 		'is_for_mobile',
 		'parent_id',
