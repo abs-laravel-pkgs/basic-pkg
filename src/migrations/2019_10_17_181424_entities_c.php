@@ -22,13 +22,8 @@ class EntitiesC extends Migration {
 			$table->timestamps();
 			$table->softDeletes();
 
-			$table->foreign('company_id')->references('id')->on('companies')->onDelete('SET NULL')->onUpdate('cascade');
 			$table->foreign('entity_type_id')->references('id')->on('entity_types')->onDelete('CASCADE')->onUpdate('cascade');
-			$table->foreign('created_by_id')->references('id')->on('users')->onDelete('SET NULL')->onUpdate('cascade');
-			$table->foreign('updated_by_id')->references('id')->on('users')->onDelete('SET NULL')->onUpdate('cascade');
-			$table->foreign('deleted_by_id')->references('id')->on('users')->onDelete('SET NULL')->onUpdate('cascade');
 
-			$table->unique(["company_id", "entity_type_id", "name"]);
 		});
 	}
 

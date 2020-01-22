@@ -13,9 +13,10 @@ class EntityTypesC extends Migration {
 	public function up() {
 		Schema::create('entity_types', function (Blueprint $table) {
 			$table->increments('id');
+			$table->unsignedInteger('company_id')->nullable();
 			$table->string('name', 191);
 
-			$table->unique(["name"]);
+			$table->unique(["company_id", "name"]);
 		});
 	}
 

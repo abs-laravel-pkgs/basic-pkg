@@ -13,6 +13,7 @@ class AddressesC extends Migration {
 	public function up() {
 		Schema::create('addresses', function (Blueprint $table) {
 			$table->increments('id');
+			$table->unsignedInteger('company_id');
 			$table->unsignedInteger('address_of_id');
 			$table->unsignedInteger('entity_id');
 			$table->string('name', 191);
@@ -25,10 +26,6 @@ class AddressesC extends Migration {
 			$table->string('pincode', 10)->nullable();
 
 			$table->foreign('address_of_id')->references('id')->on('configs')->onDelete('CASCADE')->onUpdate('cascade');
-			$table->foreign('contact_person_id')->references('id')->on('users')->onDelete('SET NULL')->onUpdate('cascade');
-			$table->foreign('state_id')->references('id')->on('states')->onDelete('SET NULL')->onUpdate('cascade');
-			$table->foreign('city_id')->references('id')->on('cities')->onDelete('SET NULL')->onUpdate('cascade');
-			$table->foreign('country_id')->references('id')->on('countries')->onDelete('CASCADE')->onUpdate('cascade');
 
 			$table->unique(["entity_id", "address_of_id", "name"]);
 		});

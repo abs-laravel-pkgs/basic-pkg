@@ -13,6 +13,7 @@ class AttachmentsC extends Migration {
 	public function up() {
 		Schema::create('attachments', function (Blueprint $table) {
 			$table->increments('id');
+			$table->unsignedInteger('company_id');
 			$table->unsignedInteger('attachment_of_id');
 			$table->unsignedInteger('attachment_type_id');
 			$table->unsignedInteger('entity_id');
