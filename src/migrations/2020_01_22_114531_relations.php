@@ -11,6 +11,7 @@ class Relations extends Migration {
 	 * @return void
 	 */
 	public function up() {
+
 		Schema::table('attachments', function (Blueprint $table) {
 			$table->foreign('company_id')->references('id')->on('companies')->onDelete('CASCADE')->onUpdate('cascade');
 		});
@@ -61,6 +62,35 @@ class Relations extends Migration {
 			$table->unique(["company_id", "state_id", "code"]);
 		});
 
+		Schema::table('countries', function (Blueprint $table) {
+			$table->foreign('created_by_id')->references('id')->on('users')->onDelete('SET NULL')->onUpdate('cascade');
+			$table->foreign('updated_by_id')->references('id')->on('users')->onDelete('SET NULL')->onUpdate('cascade');
+			$table->foreign('deleted_by_id')->references('id')->on('users')->onDelete('SET NULL')->onUpdate('cascade');
+		});
+
+		Schema::table('states', function (Blueprint $table) {
+			$table->foreign('created_by_id')->references('id')->on('users')->onDelete('SET NULL')->onUpdate('cascade');
+			$table->foreign('updated_by_id')->references('id')->on('users')->onDelete('SET NULL')->onUpdate('cascade');
+			$table->foreign('deleted_by_id')->references('id')->on('users')->onDelete('SET NULL')->onUpdate('cascade');
+		});
+
+		Schema::table('cities', function (Blueprint $table) {
+			$table->foreign('created_by_id')->references('id')->on('users')->onDelete('SET NULL')->onUpdate('cascade');
+			$table->foreign('updated_by_id')->references('id')->on('users')->onDelete('SET NULL')->onUpdate('cascade');
+			$table->foreign('deleted_by_id')->references('id')->on('users')->onDelete('SET NULL')->onUpdate('cascade');
+		});
+
+		Schema::table('regions', function (Blueprint $table) {
+			$table->foreign('created_by_id')->references('id')->on('users')->onDelete('SET NULL')->onUpdate('cascade');
+			$table->foreign('updated_by_id')->references('id')->on('users')->onDelete('SET NULL')->onUpdate('cascade');
+			$table->foreign('deleted_by_id')->references('id')->on('users')->onDelete('SET NULL')->onUpdate('cascade');
+		});
+
+		Schema::table('users', function (Blueprint $table) {
+			$table->foreign('created_by_id')->references('id')->on('users')->onDelete('SET NULL')->onUpdate('cascade');
+			$table->foreign('updated_by_id')->references('id')->on('users')->onDelete('SET NULL')->onUpdate('cascade');
+			$table->foreign('deleted_by_id')->references('id')->on('users')->onDelete('SET NULL')->onUpdate('cascade');
+		});
 	}
 
 	/**
@@ -69,6 +99,5 @@ class Relations extends Migration {
 	 * @return void
 	 */
 	public function down() {
-		//
 	}
 }
