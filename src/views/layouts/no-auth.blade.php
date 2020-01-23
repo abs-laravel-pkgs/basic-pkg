@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html dir="ltr" lang="{{ app()->getLocale() }}" ng-app1="app">
+<html dir="ltr" lang="{{ app()->getLocale() }}" ng-app="app">
     <head>
         @include($theme.'/partials/common/head')
         @yield('header_css')

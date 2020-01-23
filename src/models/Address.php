@@ -17,15 +17,15 @@ class Address extends Model {
 	];
 
 	public function city() {
-		return $this->belongsTo('Abs\Basic\City', 'city_id');
+		return $this->belongsTo('Abs\LocationPkg\City', 'city_id');
 	}
 
 	public function state() {
-		return $this->belongsTo('Abs\Basic\State', 'state_id');
+		return $this->belongsTo('Abs\LocationPkg\State', 'state_id');
 	}
 
 	public function country() {
-		return $this->belongsTo('Abs\Basic\Country', 'country_id');
+		return $this->belongsTo('Abs\LocationPkg\Country', 'country_id');
 	}
 
 	public function getFormattedAddressAttribute() {
