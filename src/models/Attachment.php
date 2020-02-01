@@ -8,14 +8,10 @@ class Attachment extends Model {
 	protected $table = 'attachments';
 	public $timestamps = false;
 	protected $fillable = [
-		'code',
+		'company_id',
+		'attachment_of_id',
+		'attachment_type_id',
+		'entity_id',
 		'name',
-		'address_id',
-		'logo_id',
-		'contact_number',
-		'email',
-		'created_by_id',
-		'updated_by_id',
-		'deleted_by_id',
 	];
 }
