@@ -38,4 +38,7 @@ trait BasicTrait {
 		dump($success . ' Records Processed');
 	}
 
+	public static function getList() {
+		return self::select('name', 'id')->get();
+	}
 }
