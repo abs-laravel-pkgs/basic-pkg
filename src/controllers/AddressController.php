@@ -1,7 +1,8 @@
 <?php
 
 namespace Abs\Basic;
-use Abs\Basic\Country;
+use Abs\LocationPkg\Country;
+use Abs\LocationPkg\State;
 use App\Address;
 use App\Http\Controllers\Controller;
 use Auth;
