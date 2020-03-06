@@ -1,10 +1,10 @@
 <?php
 
-namespace Abs\Basic;
+namespace Abs\BasicPkg;
 
 use Illuminate\Support\ServiceProvider;
 
-class BasicServiceProvider extends ServiceProvider {
+class BasicPkgServiceProvider extends ServiceProvider {
 	/**
 	 * Register services.
 	 *
@@ -16,7 +16,7 @@ class BasicServiceProvider extends ServiceProvider {
 		$this->loadMigrationsFrom(__DIR__ . '/migrations');
 		$this->loadViewsFrom(__DIR__ . '/views', 'basic-pkg');
 		$this->publishes([
-			__DIR__ . '/views' => base_path('resources/views/abs/basic'),
+			// __DIR__ . '/views' => base_path('resources/views'),
 		]);
 	}
 
@@ -26,7 +26,7 @@ class BasicServiceProvider extends ServiceProvider {
 	 * @return void
 	 */
 	public function boot() {
-		$this->app->make('Abs\Basic\EntityController');
-		$this->app->make('Abs\Basic\API\AuthController');
+		// $this->app->make('Abs\Basic\EntityController');
+		// $this->app->make('Abs\Basic\API\AuthController');
 	}
 }
