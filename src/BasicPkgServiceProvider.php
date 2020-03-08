@@ -26,7 +26,7 @@ class BasicPkgServiceProvider extends ServiceProvider {
 	 * @return void
 	 */
 	public function boot() {
-		// $this->app->make('Abs\Basic\EntityController');
-		// $this->app->make('Abs\Basic\API\AuthController');
+		// $this->app->make('Abs\BasicPkg\EntityController');
+		// $this->app->make('Abs\BasicPkg\API\AuthController');
 	}
 }

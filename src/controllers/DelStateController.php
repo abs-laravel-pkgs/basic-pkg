@@ -1,7 +1,7 @@
 <?php
 
-namespace Abs\Basic;
-use Abs\Basic\State;
+namespace Abs\BasicPkg;
+use Abs\BasicPkg\State;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Validator;

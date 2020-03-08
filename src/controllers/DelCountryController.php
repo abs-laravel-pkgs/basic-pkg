@@ -1,7 +1,7 @@
 <?php
 
-namespace Abs\Basic;
-use Abs\Basic\Country;
+namespace Abs\BasicPkg;
+use Abs\BasicPkg\Country;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 

@@ -1,7 +1,7 @@
 <?php
-namespace Abs\Basic\Database\Seeds;
+namespace Abs\BasicPkg\Database\Seeds;
 
-use Abs\Basic\Country;
+use Abs\BasicPkg\Country;
 use Excel;
 use Illuminate\Database\Seeder;
 

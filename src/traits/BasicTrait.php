@@ -1,5 +1,5 @@
 <?php
-namespace Abs\Basic\Traits;
+namespace Abs\BasicPkg\Traits;
 
 trait BasicTrait {
 	public static function createFromCollection($records, $company = null, $specific_company = null, $tc, $command) {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Abs\Basic;
+namespace Abs\BasicPkg;
 use Abs\LocationPkg\Country;
 use Abs\LocationPkg\State;
 use App\Address;

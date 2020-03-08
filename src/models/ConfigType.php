@@ -1,6 +1,6 @@
 <?php
 
-namespace Abs\Basic;
+namespace Abs\BasicPkg;
 
 use Illuminate\Database\Eloquent\Model;
 

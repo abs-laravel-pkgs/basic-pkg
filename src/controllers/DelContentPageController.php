@@ -1,7 +1,7 @@
 <?php
 
-namespace Abs\Basic;
-use Abs\Basic\Company;
+namespace Abs\BasicPkg;
+use Abs\BasicPkg\Company;
 use App\Category;
 use App\Http\Controllers\Controller;
 use App\Index;

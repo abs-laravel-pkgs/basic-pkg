@@ -1,5 +1,5 @@
 <?php
-namespace Abs\Basic\API;
+namespace Abs\BasicPkg\API;
 
 use App\Http\Controllers\Controller;
 use App\User;

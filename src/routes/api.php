@@ -1,6 +1,6 @@
 <?php
 
-Route::group(['namespace' => 'Abs\Basic\API', 'middleware' => ['api']], function () {
+Route::group(['namespace' => 'Abs\BasicPkg\API', 'middleware' => ['api']], function () {
 	Route::group(['prefix' => 'basic/api'], function () {
 
 		Route::post('login', 'AuthController@login');

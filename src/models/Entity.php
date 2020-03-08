@@ -1,8 +1,8 @@
 <?php
 
-namespace Abs\Basic;
+namespace Abs\BasicPkg;
 
-use Abs\Basic\Traits\BasicTrait;
+use Abs\BasicPkg\Traits\BasicTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
