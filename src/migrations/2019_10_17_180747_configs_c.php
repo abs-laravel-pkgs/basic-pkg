@@ -11,15 +11,18 @@ class ConfigsC extends Migration {
 	 * @return void
 	 */
 	public function up() {
-		Schema::create('configs', function (Blueprint $table) {
-			$table->increments('id');
-			$table->unsignedInteger('config_type_id');
-			$table->string('name', 191);
+		if (!Schema::hasTable('configs')) {
 
-			$table->foreign('config_type_id')->references('id')->on('config_types')->onDelete('CASCADE')->onUpdate('cascade');
+			Schema::create('configs', function (Blueprint $table) {
+				$table->increments('id');
+				$table->unsignedInteger('config_type_id');
+				$table->string('name', 191);
 
-			$table->unique(["config_type_id", "name"]);
-		});
+				$table->foreign('config_type_id')->references('id')->on('config_types')->onDelete('CASCADE')->onUpdate('cascade');
+
+				$table->unique(["config_type_id", "name"]);
+			});
+		}
 	}
 
 	/**

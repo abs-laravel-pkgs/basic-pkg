@@ -11,17 +11,20 @@ class AttachmentsC extends Migration {
 	 * @return void
 	 */
 	public function up() {
-		Schema::create('attachments', function (Blueprint $table) {
-			$table->increments('id');
-			$table->unsignedInteger('company_id');
-			$table->unsignedInteger('attachment_of_id');
-			$table->unsignedInteger('attachment_type_id');
-			$table->unsignedInteger('entity_id');
-			$table->string('name', 255);
+		if (!Schema::hasTable('attachments')) {
 
-			$table->foreign('attachment_of_id')->references('id')->on('configs')->onDelete('CASCADE')->onUpdate('cascade');
-			$table->foreign('attachment_type_id')->references('id')->on('configs')->onDelete('CASCADE')->onUpdate('cascade');
-		});
+			Schema::create('attachments', function (Blueprint $table) {
+				$table->increments('id');
+				$table->unsignedInteger('company_id');
+				$table->unsignedInteger('attachment_of_id');
+				$table->unsignedInteger('attachment_type_id');
+				$table->unsignedInteger('entity_id');
+				$table->string('name', 255);
+
+				$table->foreign('attachment_of_id')->references('id')->on('configs')->onDelete('CASCADE')->onUpdate('cascade');
+				$table->foreign('attachment_type_id')->references('id')->on('configs')->onDelete('CASCADE')->onUpdate('cascade');
+			});
+		}
 	}
 
 	/**

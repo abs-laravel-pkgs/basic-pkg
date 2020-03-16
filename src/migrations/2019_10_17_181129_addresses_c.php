@@ -11,24 +11,27 @@ class AddressesC extends Migration {
 	 * @return void
 	 */
 	public function up() {
-		Schema::create('addresses', function (Blueprint $table) {
-			$table->increments('id');
-			$table->unsignedInteger('company_id');
-			$table->unsignedInteger('address_of_id');
-			$table->unsignedInteger('entity_id');
-			$table->string('name', 191);
-			$table->unsignedInteger('contact_person_id')->nullable();
-			$table->string('address_line_1', 255);
-			$table->string('address_line_2', 255)->nullable();
-			$table->unsignedInteger('state_id')->nullable();
-			$table->unsignedInteger('city_id')->nullable();
-			$table->unsignedInteger('country_id');
-			$table->string('pincode', 10)->nullable();
+		if (!Schema::hasTable('addresses')) {
 
-			$table->foreign('address_of_id')->references('id')->on('configs')->onDelete('CASCADE')->onUpdate('cascade');
+			Schema::create('addresses', function (Blueprint $table) {
+				$table->increments('id');
+				$table->unsignedInteger('company_id');
+				$table->unsignedInteger('address_of_id');
+				$table->unsignedInteger('entity_id');
+				$table->string('name', 191);
+				$table->unsignedInteger('contact_person_id')->nullable();
+				$table->string('address_line_1', 255);
+				$table->string('address_line_2', 255)->nullable();
+				$table->unsignedInteger('state_id')->nullable();
+				$table->unsignedInteger('city_id')->nullable();
+				$table->unsignedInteger('country_id');
+				$table->string('pincode', 10)->nullable();
 
-			$table->unique(["entity_id", "address_of_id", "name"]);
-		});
+				$table->foreign('address_of_id')->references('id')->on('configs')->onDelete('CASCADE')->onUpdate('cascade');
+
+				$table->unique(["entity_id", "address_of_id", "name"]);
+			});
+		}
 	}
 
 	/**

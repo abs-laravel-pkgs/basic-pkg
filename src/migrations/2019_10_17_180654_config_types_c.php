@@ -11,12 +11,14 @@ class ConfigTypesC extends Migration {
 	 * @return void
 	 */
 	public function up() {
-		Schema::create('config_types', function (Blueprint $table) {
-			$table->increments('id');
-			$table->string('name', 191);
+		if (!Schema::hasTable('config_types')) {
+			Schema::create('config_types', function (Blueprint $table) {
+				$table->increments('id');
+				$table->string('name', 191);
 
-			$table->unique(["name"]);
-		});
+				$table->unique(["name"]);
+			});
+		}
 	}
 
 	/**
