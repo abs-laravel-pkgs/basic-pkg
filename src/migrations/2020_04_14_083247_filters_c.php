@@ -16,6 +16,7 @@ class FiltersC extends Migration {
 				$table->increments('id');
 				$table->unsignedInteger('user_id');
 				$table->unsignedInteger('page_id');
+				$table->string('name', 191);
 				$table->text('value');
 				$table->unsignedInteger('created_by_id')->nullable();
 				$table->unsignedInteger('updated_by_id')->nullable();
@@ -30,7 +31,7 @@ class FiltersC extends Migration {
 				$table->foreign('updated_by_id')->references('id')->on('users')->onDelete('SET NULL')->onUpdate('cascade');
 				$table->foreign('deleted_by_id')->references('id')->on('users')->onDelete('SET NULL')->onUpdate('cascade');
 
-				$table->unique(["user_id", "page_id"]);
+				$table->unique(["user_id", "page_id", 'name']);
 			});
 		}
 	}
