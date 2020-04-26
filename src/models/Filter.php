@@ -29,7 +29,7 @@ class Filter extends Model {
 		return $this->belongsTo('App\Config', 'page_id');
 	}
 
-	public static function create($sample_entities, $admin, $company) {
+	public static function make($sample_entities, $admin, $company) {
 		foreach ($sample_entities as $entity_type_id => $entities) {
 			foreach ($entities as $entity_name) {
 				$record = Entity::firstOrNew([
