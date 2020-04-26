@@ -3,6 +3,7 @@
 namespace Abs\BasicPkg;
 
 use Abs\BasicPkg\Traits\BasicTrait;
+use Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -14,6 +15,7 @@ class Filter extends Model {
 		'id',
 		'user_id',
 		'page_id',
+		'name',
 		'value',
 		'created_by_id',
 	];
@@ -102,4 +104,21 @@ class Filter extends Model {
 		}
 		$record->save();
 	}
+
+	public static function getList($page_id, $add_default = true, $default_text = 'Select User') {
+		$list = Collect(Self::select([
+			'id',
+			'name',
+		])->where(function ($q) {
+			$q->where('user_id', Auth::id())
+				->orWhereNull('user_id')
+			;
+		}
+		)->orderBy('id')->get());
+		if ($add_default) {
+			$list->prepend(['id' => '', 'name' => $default_text]);
+		}
+		return $list;
+	}
+
 }
