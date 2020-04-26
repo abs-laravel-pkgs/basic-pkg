@@ -109,12 +109,16 @@ class Filter extends Model {
 		$list = Collect(Self::select([
 			'id',
 			'name',
-		])->where(function ($q) {
-			$q->where('user_id', Auth::id())
-				->orWhereNull('user_id')
-			;
-		}
-		)->orderBy('id')->get());
+		])
+				->where(function ($q) {
+					$q->where('user_id', Auth::id())
+						->orWhereNull('user_id')
+					;
+				})
+				->orderBy('user_id')
+				->orderBy('name')
+				->get()
+		);
 		if ($add_default) {
 			$list->prepend(['id' => '', 'name' => $default_text]);
 		}
