@@ -18,7 +18,7 @@ class Entity extends Model {
 		'created_by_id',
 	];
 
-	public static function create($sample_entities, $admin, $company) {
+	public static function generate($sample_entities, $admin, $company) {
 		foreach ($sample_entities as $entity_type_id => $entities) {
 			foreach ($entities as $entity_name) {
 				$record = Entity::firstOrNew([
