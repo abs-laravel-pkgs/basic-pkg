@@ -116,6 +116,7 @@ class Filter extends Model {
 						->orWhereNull('user_id')
 					;
 				})
+				->where('page_id', $page_id)
 				->orderBy('user_id')
 				->orderBy('name')
 				->get()
