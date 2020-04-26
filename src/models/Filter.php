@@ -16,6 +16,7 @@ class Filter extends Model {
 		'user_id',
 		'page_id',
 		'name',
+		'is_default',
 		'value',
 		'created_by_id',
 	];

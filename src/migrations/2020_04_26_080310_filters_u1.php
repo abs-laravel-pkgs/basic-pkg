@@ -13,6 +13,7 @@ class FiltersU1 extends Migration {
 	public function up() {
 		Schema::table('filters', function (Blueprint $table) {
 			$table->unsignedInteger('user_id')->nullable()->change();
+			$table->boolean('is_default')->default(0)->after('name');
 		});
 	}
 
@@ -22,6 +23,8 @@ class FiltersU1 extends Migration {
 	 * @return void
 	 */
 	public function down() {
-		//
+		Schema::table('filters', function (Blueprint $table) {
+			$table->dropColumn('is_default');
+		});
 	}
 }

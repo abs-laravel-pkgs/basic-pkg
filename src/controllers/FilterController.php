@@ -23,6 +23,19 @@ class FilterController extends Controller {
 			}
 			$filter->updated_by_id = Auth::id();
 		}
+
+		if ($r->is_default) {
+			Filter::
+				where([
+				'page_id' => $r->page_id,
+				'user_id' => Auth::id(),
+			])
+				->update([
+					'is_default' => 0,
+				])
+			;
+		}
+
 		$filter->fill($r->all());
 		$filter->save();
 
