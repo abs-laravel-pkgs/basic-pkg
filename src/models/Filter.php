@@ -127,4 +127,33 @@ class Filter extends Model {
 		return $list;
 	}
 
+	public static function getFilterParams($request, $page_id) {
+		if ($request->filter_id) {
+			$filter = Filter::find($request->filter_id);
+		} else {
+			//GETTING DEFAULT FILTER PRESET OF USER
+			$filter = Filter::where([
+				'page_id' => $page_id,
+				'user_id' => Auth::id(),
+				'is_default' => 1,
+			])
+				->first();
+			if (!$filter) {
+				//GETTING DEFAULT FILTER PRESET OF PAGE
+				$filter = Filter::where([
+					'page_id' => $page_id,
+				])
+					->whereNull('user_id')
+					->first();
+			}
+		}
+		$filter_id = $filter->id;
+		if ($filter) {
+			$filter = json_decode($filter->value);
+		}
+		return [
+			'filter' => $filter,
+			'filter_id' => $filter_id,
+		];
+	}
 }

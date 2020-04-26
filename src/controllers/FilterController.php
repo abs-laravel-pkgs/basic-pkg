@@ -10,6 +10,23 @@ class FilterController extends Controller {
 
 	public function saveFilterPreset(Request $r) {
 
+		if ($r->is_page_default) {
+			$filter = Filter::
+				where([
+				'page_id' => $r->page_id,
+			])
+				->whereNull('user_id')
+				->first()
+			;
+			$filter->is_default = 0;
+			$filter->value = $r->value;
+			$filter->save();
+			return response()->json([
+				'success' => true,
+				'message' => 'Filter Preset saved successfully!',
+			]);
+		}
+
 		if (!$r->id) {
 			$filter = new Filter;
 			$filter->created_by_id = Auth::id();
@@ -37,6 +54,11 @@ class FilterController extends Controller {
 		}
 
 		$filter->fill($r->all());
+		if (!$r->is_page_default) {
+			$filter->user_id = Auth::id();
+		}
+		$filter->is_default = $r->is_default ? 1 : 0;
+
 		$filter->save();
 
 		return response()->json([
