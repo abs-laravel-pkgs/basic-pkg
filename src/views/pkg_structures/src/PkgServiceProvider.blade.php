@@ -1,10 +1,10 @@
 <?php
 
-namespace Abs\BasicPkg;
+namespace Abs\YYY;
 
 use Illuminate\Support\ServiceProvider;
 
-class BasicPkgServiceProvider extends ServiceProvider {
+class YYYServiceProvider extends ServiceProvider {
 	/**
 	 * Register services.
 	 *
@@ -13,9 +13,12 @@ class BasicPkgServiceProvider extends ServiceProvider {
 	public function register() {
 		$this->loadRoutesFrom(__DIR__ . '/routes/web.php');
 		$this->loadRoutesFrom(__DIR__ . '/routes/api.php');
-		$this->loadMigrationsFrom(__DIR__ . '/migrations');
-		$this->loadViewsFrom(__DIR__ . '/views', 'basic-pkg');
+		$this->loadMigrationsFrom(__DIR__ . '/database/migrations');
+		$this->loadViewsFrom(__DIR__ . '/views', 'GGG');
 		$this->publishes([
+			__DIR__ . '/public' => base_path('public'),
+			__DIR__ . '/database/seeds/client' => 'database/seeds',
+			__DIR__ . '/config/config.php' => config_path('GGG.php'),
 		]);
 	}
 
