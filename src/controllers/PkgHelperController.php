@@ -231,7 +231,7 @@ class PkgHelperController extends Controller {
 		$contents = str_replace('GGG', $this->data['pkg_lower_chain'], $contents);
 		$contents = str_replace('HHH', $this->data['module_camel_case_singular'], $contents);
 		$contents = str_replace('III', $this->data['pkg_lower_snake'], $contents);
-		$contents = str_replace('JJJ,', $this->data['columns'], $contents);
+		$contents = str_replace('JJJ', $this->data['columns'], $contents);
 		$contents = str_replace('KKK', $this->data['web_routes'], $contents);
 		$contents = str_replace('LLL', $this->data['ng_routes'], $contents);
 		$contents = str_replace('MMM,', $this->data['permissions'], $contents);

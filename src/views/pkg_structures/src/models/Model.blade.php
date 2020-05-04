@@ -13,9 +13,9 @@ class ZZZ extends Model {
 	use SoftDeletes;
 	protected $table = 'AAA';
 	public $timestamps = true;
-	protected $fillable = [
-		JJJ,
-	];
+	protected $fillable =
+		JJJ
+	;
 
 	public function getDateOfJoinAttribute($value) {
 		return empty($value) ? '' : date('d-m-Y', strtotime($value));
