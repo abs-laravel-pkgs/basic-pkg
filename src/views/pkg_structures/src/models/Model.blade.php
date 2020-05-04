@@ -14,10 +14,7 @@ class ZZZ extends Model {
 	protected $table = 'AAA';
 	public $timestamps = true;
 	protected $fillable = [
-		'code',
-		'designation_id',
-		'github_username',
-		'date_of_join',
+		JJJ,
 	];
 
 	public function getDateOfJoinAttribute($value) {

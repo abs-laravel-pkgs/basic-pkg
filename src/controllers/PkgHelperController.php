@@ -2,6 +2,7 @@
 
 namespace Abs\BasicPkg;
 use App\Http\Controllers\Controller;
+use App\Table;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -38,6 +39,15 @@ class PkgHelperController extends Controller {
 			$this->data['module_lower_chain_plural'] = $module_plural_name; //EEE
 			$this->data['module_lower_chain_singular'] = $module_name; //FFF
 			$this->data['module_camel_case_singular'] = lcfirst(str_replace(' ', '', ucwords(str_replace('-', ' ', $module_name)))); //HHH
+			$this->data['columns'] = '';
+
+			$contents = file_get_contents(view('basic-pkg::pkg_structures/composer')->getPath());
+			$contents = $this->replaceTemplate($contents);
+			Storage::put($r->pkg_name . '/composer.json', $contents, 'public');
+
+			$contents = file_get_contents(view('basic-pkg::pkg_structures/gitignore')->getPath());
+			$contents = $this->replaceTemplate($contents);
+			Storage::put($r->pkg_name . '/.gitignore', $contents, 'public');
 
 			Storage::makeDirectory($r->pkg_name . '/src/config', 0777);
 			$contents = file_get_contents(view('basic-pkg::pkg_structures/src/config/config')->getPath());
@@ -50,6 +60,10 @@ class PkgHelperController extends Controller {
 			$contents = $this->replaceTemplate($contents);
 			Storage::put($r->pkg_name . '/src/controllers/' . $this->data['module_pascal'] . 'Controller.php', $contents, 'public');
 
+			$contents = file_get_contents(view('basic-pkg::pkg_structures/src/controllers/AppController')->getPath());
+			$contents = $this->replaceTemplate($contents);
+			Storage::put($r->pkg_name . '/' . $this->data['module_pascal'] . 'Controller.php', $contents, 'public');
+
 			Storage::makeDirectory($r->pkg_name . '/src/database/migrations', 0777);
 			Storage::makeDirectory($r->pkg_name . '/src/database/seeds', 0777);
 			$contents = file_get_contents(view('basic-pkg::pkg_structures/src/database/seeds/PkgPermissionSeeder')->getPath());
@@ -58,8 +72,18 @@ class PkgHelperController extends Controller {
 
 			Storage::makeDirectory($r->pkg_name . '/src/models', 0777);
 			$contents = file_get_contents(view('basic-pkg::pkg_structures/src/models/Model')->getPath());
+			$table = Table::where('name', $this->data['module_lower_snake_plural'])->first();
+			$this->data['columns'] = '';
+			if ($table) {
+				$columns = $table->columns()->pluck('name')->toArray();
+				$this->data['columns'] = json_encode($columns);
+			}
 			$contents = $this->replaceTemplate($contents);
 			Storage::put($r->pkg_name . '/src/models/' . $this->data['module_pascal'] . '.php', $contents, 'public');
+
+			$contents = file_get_contents(view('basic-pkg::pkg_structures/src/models/AppModel')->getPath());
+			$contents = $this->replaceTemplate($contents);
+			Storage::put($r->pkg_name . '/' . $this->data['module_pascal'] . '.php', $contents, 'public');
 
 			$dir = $r->pkg_name . '/src/public/themes/' . $template . '/' . $this->data['pkg_lower_chain'] . '/' . $this->data['module_lower_chain_singular'] . '/';
 			Storage::makeDirectory($dir, 0777);
@@ -118,6 +142,7 @@ class PkgHelperController extends Controller {
 		$contents = str_replace('GGG', $this->data['pkg_lower_chain'], $contents);
 		$contents = str_replace('HHH', $this->data['module_camel_case_singular'], $contents);
 		$contents = str_replace('III', $this->data['pkg_lower_snake'], $contents);
+		$contents = str_replace('JJJ', $this->data['columns'], $contents);
 		return $contents;
 	}
 }

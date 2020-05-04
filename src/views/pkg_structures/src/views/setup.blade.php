@@ -33,4 +33,4 @@
     var BBB_card_list_template_url = "{{asset($III_prefix.'/public/themes/'.$theme.'/GGG/FFF/card-list.html')}}";
     var BBB_modal_form_template_url = "{{asset($III_prefix.'/public/themes/'.$theme.'/GGG/partials/FFF-modal-form.html')}}";
 </script>
-<script type="text/javascript" src="{{asset($GGG_prefix.'/public/themes/'.$theme.'/GGG/FFF/controller.js')}}"></script>
+<script type="text/javascript" src="{{asset($III_prefix.'/public/themes/'.$theme.'/GGG/FFF/controller.js')}}"></script>
