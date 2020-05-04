@@ -1,6 +1,6 @@
 <?php
 
-Route::group(['namespace' => 'Abs\YYY', 'middleware' => ['web', 'auth'], 'prefix' => 'GGG'], function () {
+Route::group(['middleware' => ['web', 'auth'], 'prefix' => 'GGG'], function () {
 
 	//DDD
 	Route::get('/FFF/get-list', 'ZZZController@getZZZList')->name('getZZZList');

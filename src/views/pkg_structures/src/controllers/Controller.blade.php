@@ -23,7 +23,7 @@ class ZZZController extends Controller {
 			->select([
 				'AAA.id',
 				'AAA.name',
-				'AAA.short_name',
+				'AAA.code',
 
 				DB::raw('IF(AAA.deleted_at IS NULL, "Active","Inactive") as status'),
 			])
@@ -85,21 +85,21 @@ class ZZZController extends Controller {
 		// dd($request->all());
 		try {
 			$error_messages = [
-				'short_name.required' => 'Short Name is Required',
-				'short_name.unique' => 'Short Name is already taken',
-				'short_name.min' => 'Short Name is Minimum 3 Charachers',
-				'short_name.max' => 'Short Name is Maximum 32 Charachers',
+				'code.required' => 'Short Name is Required',
+				'code.unique' => 'Short Name is already taken',
+				'code.min' => 'Short Name is Minimum 3 Charachers',
+				'code.max' => 'Short Name is Maximum 32 Charachers',
 				'name.required' => 'Name is Required',
 				'name.unique' => 'Name is already taken',
 				'name.min' => 'Name is Minimum 3 Charachers',
 				'name.max' => 'Name is Maximum 191 Charachers',
 			];
 			$validator = Validator::make($request->all(), [
-				'short_name' => [
+				'code' => [
 					'required:true',
 					'min:3',
 					'max:32',
-					'unique:AAA,short_name,' . $request->id . ',id,company_id,' . Auth::user()->company_id,
+					'unique:AAA,code,' . $request->id . ',id,company_id,' . Auth::user()->company_id,
 				],
 				'name' => [
 					'required:true',
@@ -172,7 +172,7 @@ class ZZZController extends Controller {
 			->select([
 				'AAA.id',
 				'AAA.name',
-				'AAA.short_name',
+				'AAA.code',
 				DB::raw('IF(AAA.deleted_at IS NULL, "Active","Inactive") as status'),
 			])
 			->where('AAA.company_id', Auth::user()->company_id)
