@@ -1,4 +1,4 @@
 <?php
 return [
-	'DEV' => env('XXX', false),
+	'DEV' => env('XXX_DEV', false),
 ];

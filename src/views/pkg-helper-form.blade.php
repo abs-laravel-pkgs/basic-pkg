@@ -47,7 +47,7 @@
                                             </div><!-- Field -->
                                         </div>
                                     </div>
-                                    @for($i=1;$i<=5;$i++)
+                                    @for($i=1;$i<=50;$i++)
                                     <div class="row">
                                         <div class="col-md-3 col-sm-6">
                                             <div class="input-text form-group">
