@@ -2,7 +2,7 @@ app.component('HHHList', {
     templateUrl: BBB_list_template_url,
     controller: function($http, $location, HelperService, $scope, $routeParams, $rootScope, $element, $mdSelect) {
         $scope.loading = true;
-        $('#search_BBB').focus();
+        $('#search').focus();
         var self = this;
         $('li').removeClass('active');
         $('.master_link').addClass('active').trigger('click');
@@ -73,15 +73,15 @@ app.component('HHHList', {
         $('.dataTables_length select').select2();
 
         $scope.clear_search = function() {
-            $('#search_BBB').val('');
-            $('#BBBs_list').DataTable().search('').draw();
+            $('#search').val('');
+            $('#table').DataTable().search('').draw();
         }
         $('.refresh_table').on("click", function() {
-            $('#BBBs_list').DataTable().ajax.reload();
+            $('#table').DataTable().ajax.reload();
         });
 
         var dataTables = $('#BBBs_list').dataTable();
-        $("#search_BBB").keyup(function() {
+        $("#search").keyup(function() {
             dataTables.fnFilter(this.value);
         });
 
@@ -182,7 +182,7 @@ app.component('HHHForm', {
             }
         });
 
-        //Save Form Data 
+        //Save Form Data
         var form_id = '#BBB_form';
         var v = jQuery(form_id).validate({
             ignore: '',

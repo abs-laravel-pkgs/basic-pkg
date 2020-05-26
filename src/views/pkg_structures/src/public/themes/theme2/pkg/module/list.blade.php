@@ -8,7 +8,7 @@
                 <div class="page-header-content search-block">
                     <div class="search_filter">
                         <label>
-                            <input type="search" id="search_BBB" class="form-control" placeholder="Search" autofocus />
+                            <input type="search" id="search" class="form-control" placeholder="Search" autofocus />
                             <button class="btn-clear my-tooltip" ng-click="clear_search()" ng-shortcut="'meta+shift+c'" ng-shortcut-click data-title="ctrl+shift+c">Clear</button>
                         </label>
                     </div><!-- Search Filter -->
@@ -36,7 +36,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <table class="table" id="BBBs_list" style="width: 100% !important;">
+                    <table class="table" id="table" style="width: 100% !important;">
                         <thead>
                             <tr>
                                 <th>Actions</th>
