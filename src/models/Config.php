@@ -39,8 +39,12 @@ class Config extends Model {
 				if (isset($params['config_type_id'])) {
 					$q->where('config_type_id', $params['config_type_id']);
 				}
-			})
-			->orderBy('name');
+			});
+		if (isset($params['orderBy']) && $params['orderBy'] == 'id') {
+			$list->orderBy('id');
+		} else {
+			$list->orderBy('name');
+		}
 		$list = collect($list->get());
 		if (!isset($params['add_default'])) {
 			$params['add_default'] = true;
