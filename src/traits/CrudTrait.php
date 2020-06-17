@@ -1,0 +1,296 @@
+<?php
+namespace Abs\BasicPkg\Traits;
+
+use Abs\BasicPkg\Classes\ApiResponse;
+use Abs\BasicPkg\Services\CrudService;
+use App\Models\BaseModel;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Input;
+
+trait CrudTrait {
+
+	/**
+	 * Example: index?count=10&page=1&sorting[name]=asc&filter[name]=kevin
+	 * @return mixed
+	 * @throws Exception
+	 */
+	public function index() {
+
+		$modelName = $this->model;
+		$reflection = new \ReflectionClass($modelName);
+		$safeName = $reflection->getShortName();
+
+		$model = new $modelName();
+		if (!in_array('index', $model->crudActions)) {
+			throw new Exception('Index action is not available on ' . $this->model);
+		}
+		$qualifiedKeyName = $model->getQualifiedKeyName();
+
+		// Paginate input
+		if (Input::get('format') === 'csv') {
+			$count = PHP_INT_MAX;
+			$offset = 0;
+		} else {
+			$count = (int) Input::get('count') ? abs(Input::get('count')) : PHP_INT_MAX;
+			$offset = (((int) Input::get('page') ? abs(Input::get('page')) : 1) - 1) * $count;
+		}
+
+		// Page result
+		$query = $modelName::query();
+		$totalQuery = clone $query;
+		$totalCount = $totalQuery->distinct($qualifiedKeyName)
+			->count($qualifiedKeyName);
+		CrudService::filterQuery($query);
+		$filteredQuery = clone $query;
+		$filteredCount = $filteredQuery->distinct($qualifiedKeyName)
+			->count($qualifiedKeyName);
+		CrudService::sortQuery($query);
+
+		// Using any selects overrides default 'table.*" select
+		$query->addSelect($model->getTable() . '.*');
+		// Select scopes
+		foreach ($model->selects as $select) {
+			$scopeName = 'select' . ucfirst(camel_case($select));
+			$query->$scopeName();
+		}
+		$query->take($count)
+			->skip($offset); // Paginate results
+		$pageResult = $query->groupBy($qualifiedKeyName)
+			->get();
+
+		// Relationships
+		if (method_exists($modelName, 'relationships')) {
+			$pageResult->load($modelName::relationships('index', Input::get('format')));
+		}
+
+		if (Input::get('format') === 'csv') {
+			if ($pageResult->count() === 0) {
+				return 'No data to export';
+			}
+			$exportArr = [];
+			foreach ($pageResult as $model) {
+				$exportArr[] = $model->toCsvRow();
+			}
+
+			$csvObj = new CSV();
+			$csvObj->fromArray($exportArr)
+				->render('export.csv');
+
+			return true;
+		} else {
+			$response = new ApiResponse();
+			$response->setData(snake_case($safeName) . '_collection', $pageResult);
+			$response->setData(snake_case($safeName) . '_filtered_count', $filteredCount);
+			$response->setData(snake_case($safeName) . '_total_count', $totalCount);
+			if (method_exists($this, 'alterCrudResponse')) {
+				$this->alterCrudResponse('index', $response);
+			}
+
+			return $response->response();
+		}
+	}
+
+	public function save() {
+		InputHelper::checkAndReplaceInput();
+		return self::_save(new $this->model)->response();
+	}
+
+	public function read($id) {
+		$model = $this->model;
+
+		$Model = $model::findOrFail($id);
+		if (!in_array('read', $Model->crudActions)) {
+			throw new Exception('Read action is not available on ' . $this->model);
+		}
+
+		$response = new ApiResponse();
+		if (method_exists($this, 'beforeCrudAction')) {
+			$this->beforeCrudAction('read', $response, $Model);
+		}
+		$modelName = $Model->safeName();
+		$modelSnakeName = $Model->snakeName();
+
+		// Relationships
+		if (method_exists($modelName, 'relationships')) {
+			$Model->load($modelName::relationships('read'));
+		}
+
+		$response->setData($modelSnakeName, $Model);
+		if (method_exists($this, 'alterCrudResponse')) {
+			$this->alterCrudResponse('read', $response);
+		}
+
+		return $response->response();
+	}
+
+	public function create() {
+
+		$model = $this->model;
+		$Model = new $model();
+		if (!in_array('create', $Model->crudActions)) {
+			throw new Exception('Create action is not available on ' . $this->model);
+		}
+		$response = $this->_save($Model);
+		if (method_exists($this, 'alterCrudResponse')) {
+			$this->alterCrudResponse('create', $response);
+		}
+		return $response->response();
+	}
+
+	public function update($Model) {
+		if (!in_array('update', $Model->crudActions)) {
+			throw new Exception('Update/save action is not available on ' . $this->model);
+		}
+		$response = $this->_save($Model);
+		if (method_exists($this, 'alterCrudResponse')) {
+			$this->alterCrudResponse('update', $response);
+		}
+		return $response->response();
+	}
+
+	public function delete($Model) {
+		if (!in_array('delete', $Model->crudActions)) {
+			throw new Exception('Delete action is not available on ' . $this->model);
+		}
+		$response = new ApiResponse();
+
+		try {
+			$Model->checkDelete();
+			$Model->delete();
+		} catch (Exception $ex) {
+			$response->setError($ex);
+		}
+		if (method_exists($this, 'afterDelete')) {
+			$this->afterDelete('delete', $Model);
+		}
+		if (method_exists($this, 'alterCrudResponse')) {
+			$this->alterCrudResponse('delete', $response);
+		}
+		if (method_exists($this, 'afterDelete')) {
+			$this->afterDelete($Model);
+		}
+		return $response->response();
+	}
+
+	private function _save($Model) {
+		InputHelper::checkAndReplaceInput();
+		if (!in_array('update', $Model->crudActions)) {
+			throw new Exception('Update/save action is not available on ' . $this->model);
+		}
+		$response = new ApiResponse();
+
+		$input = Input::all();
+		if (method_exists($this, 'alterCrudInput')) {
+			$this->alterCrudInput('save', $input);
+		}
+		try {
+			$controller = $this;
+			DB::connection('bms')
+				->beginTransaction();
+			DB::connection('nitro')
+				->beginTransaction();
+			try {
+				if (method_exists($controller, 'beforeSave')) {
+					$controller->beforeSave($Model, $input);
+				}
+				$modelKeyName = $Model->getKeyName();
+				$oldKey = array_get($input, $modelKeyName);
+				$Model = SaveHelper::uberSave($Model->safeName(), $input);
+				$isNew = $oldKey != $Model->$modelKeyName;
+				// need to reload the model so that internal attributes array is filled
+				$Model = $Model::find($Model->$modelKeyName);
+				if (method_exists($controller, 'afterSave')) {
+					$controller->afterSave($Model, $isNew, $input, $response);
+				}
+				// Relationships
+				if (method_exists($Model, 'relationships')) {
+					$Model->load($Model::relationships('read'));
+				}
+				$modelSnakeName = $Model->snakeName();
+				$response->setData($modelSnakeName, $Model);
+				if (method_exists($controller, 'alterCrudResponse')) {
+					$controller->alterCrudResponse('save', $response);
+				}
+				DB::connection('bms')
+					->commit();
+				DB::connection('nitro')
+					->commit();
+			} catch (Exception $e) {
+				DB::connection('bms')
+					->rollBack();
+				DB::connection('nitro')
+					->rollBack();
+				throw $e;
+			}
+		} catch (Exception $ex) {
+			$response->setError($ex);
+		}
+		return $response;
+	}
+
+	public function options() {
+		$modelName = $this->model;
+		$Model = App::make($modelName);
+		if (!in_array('options', $Model->crudActions)) {
+			throw new Exception('Options action is not available on ' . $modelName);
+		}
+		// $ModelResult = clone $Model;
+		// if (method_exists($Model, 'scopeOrderDefault')) {
+		// 	$ModelResult = $ModelResult->orderDefault();
+		// }
+
+		$query = $modelName::query();
+		CrudService::filterQuery($query);
+		$filteredQuery = clone $query;
+		CrudService::sortQuery($query);
+
+		$ModelResult = clone $Model;
+		if (method_exists($Model, 'scopeOrderDefault')) {
+			$query = $query->orderDefault();
+		}
+
+		$ModelResult = $query->get();
+		// $ModelResult = $ModelResult->get();
+
+		// Relationships
+		if (method_exists($modelName, 'relationships')) {
+			$ModelResult->load($modelName::relationships('options'));
+		}
+
+		$response = new ApiResponse();
+		$response->setData('options', $ModelResult);
+		if (method_exists($this, 'alterCrudResponse')) {
+			$this->alterCrudResponse('options', $response);
+		}
+		return $response->response();
+	}
+
+	/**
+	 * Presents an opportunity to modify the contents of the input before running crud action
+	 * @param $action currently only works for save
+	 * @param $input
+	 */
+	public function alterCrudInput($action, &$input) {
+		// DO NOT PLACE CODE IN HERE, THIS IS FOR DOCUMENTATION PURPOSES ONLY
+	}
+
+	/**
+	 * Presents an opportunity to run code before the crud action has taken place
+	 * @param $action currently only works for save
+	 * @param ApiResponse $response
+	 * @param BaseModel $Model
+	 */
+	public function beforeCrudAction($action, ApiResponse $Response, $Model) {
+		// DO NOT PLACE CODE IN HERE, THIS IS FOR DOCUMENTATION PURPOSES ONLY
+	}
+
+	/**
+	 * Presents an opportunity to modify the contents of the ApiResponse before crud action completes
+	 * @param string $action = index|create|read|update|delete|options
+	 * @param ApiResponse $response
+	 */
+	public function alterCrudResponse($action, ApiResponse $Response) {
+		// DO NOT PLACE CODE IN HERE, THIS IS FOR DOCUMENTATION PURPOSES ONLY
+	}
+
+}

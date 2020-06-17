@@ -16,6 +16,8 @@ class BasicPkgServiceProvider extends ServiceProvider {
 		$this->loadMigrationsFrom(__DIR__ . '/migrations');
 		$this->loadViewsFrom(__DIR__ . '/views', 'basic-pkg');
 		$this->publishes([
+			__DIR__ . '/public' => base_path('public'),
+			__DIR__ . '/config/config.php' => config_path('gigo-pkg.php'),
 		]);
 	}
 

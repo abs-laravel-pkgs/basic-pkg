@@ -2,9 +2,9 @@
 
 namespace Abs\BasicPkg;
 
-use Illuminate\Database\Eloquent\Model;
+use App\BaseModel;
 
-class Config extends Model {
+class Config extends BaseModel {
 	protected $fillable = [
 		'id',
 		'config_type_id',
@@ -12,9 +12,27 @@ class Config extends Model {
 	];
 	public $timestamps = false;
 
+	// Relations --------------------------------------------------------------
+
 	public function configType() {
 		return $this->belongsTo('App\ConfigType', 'config_type_id');
 	}
+
+	// Query Scopes --------------------------------------------------------------
+
+	public function scopeFilterConfigType($query, $config_type_id) {
+		$query->where('config_type_id', $config_type_id);
+	}
+
+	public function scopeFilterSearch($query, $term) {
+		if (strlen($term)) {
+			$query->where(function ($query) use ($term) {
+				$query->orWhere('name', 'LIKE', '%' . $term . '%');
+			});
+		}
+	}
+
+	// Static Operations --------------------------------------------------------------
 
 	public static function getList($type_id, $add_default = true, $default_text = 'Select') {
 		$list = Collect(Self::select([
