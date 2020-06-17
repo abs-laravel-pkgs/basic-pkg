@@ -185,10 +185,7 @@ trait CrudTrait {
 		}
 		try {
 			$controller = $this;
-			DB::connection('bms')
-				->beginTransaction();
-			DB::connection('nitro')
-				->beginTransaction();
+			DB::beginTransaction();
 			try {
 				if (method_exists($controller, 'beforeSave')) {
 					$controller->beforeSave($Model, $input);
@@ -211,15 +208,9 @@ trait CrudTrait {
 				if (method_exists($controller, 'alterCrudResponse')) {
 					$controller->alterCrudResponse('save', $response);
 				}
-				DB::connection('bms')
-					->commit();
-				DB::connection('nitro')
-					->commit();
+				DB::commit();
 			} catch (Exception $e) {
-				DB::connection('bms')
-					->rollBack();
-				DB::connection('nitro')
-					->rollBack();
+				DB::rollBack();
 				throw $e;
 			}
 		} catch (Exception $ex) {
