@@ -2,6 +2,7 @@
 
 namespace Abs\BasicPkg;
 
+use Abs\BasicPkg\Traits\EloquentValidationTrait;
 use App\Exceptions\ValidationException;
 use Auth;
 use Cache;
@@ -18,6 +19,7 @@ use Request;
 use Validator;
 
 abstract class BaseModel extends Model {
+	use EloquentValidationTrait;
 
 	//
 	/**
