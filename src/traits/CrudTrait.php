@@ -4,6 +4,7 @@ namespace Abs\BasicPkg\Traits;
 use Abs\BasicPkg\Classes\ApiResponse;
 use Abs\BasicPkg\Services\CrudService;
 use App\Models\BaseModel;
+use DB;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Input;
 
@@ -91,7 +92,7 @@ trait CrudTrait {
 	}
 
 	public function save() {
-		InputHelper::checkAndReplaceInput();
+		\InputHelper::checkAndReplaceInput();
 		return self::_save(new $this->model)->response();
 	}
 
@@ -173,7 +174,7 @@ trait CrudTrait {
 	}
 
 	private function _save($Model) {
-		InputHelper::checkAndReplaceInput();
+		\InputHelper::checkAndReplaceInput();
 		if (!in_array('update', $Model->crudActions)) {
 			throw new Exception('Update/save action is not available on ' . $this->model);
 		}
@@ -192,7 +193,7 @@ trait CrudTrait {
 				}
 				$modelKeyName = $Model->getKeyName();
 				$oldKey = array_get($input, $modelKeyName);
-				$Model = SaveHelper::uberSave($Model->safeName(), $input);
+				$Model = \SaveHelper::uberSave($Model->safeName(), $input);
 				$isNew = $oldKey != $Model->$modelKeyName;
 				// need to reload the model so that internal attributes array is filled
 				$Model = $Model::find($Model->$modelKeyName);
