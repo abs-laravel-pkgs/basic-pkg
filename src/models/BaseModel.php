@@ -6,7 +6,7 @@ use Abs\BasicPkg\Traits\EloquentValidationTrait;
 use App\Exceptions\ValidationException;
 use Auth;
 use Cache;
-use Carbon;
+use Carbon\Carbon;
 use Config;
 use DB;
 use Exception;
