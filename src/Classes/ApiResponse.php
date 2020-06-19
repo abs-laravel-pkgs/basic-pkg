@@ -9,6 +9,7 @@ use Response;
 class ApiResponse {
 
 	public $success = true;
+	private $message = '';
 	private $messages = array();
 	private $errors = array();
 	private $data = array();
@@ -48,7 +49,11 @@ class ApiResponse {
 	}
 
 	public function setMessage($message) {
-		$this->messages[] = $message;
+		$this->message = $message;
+	}
+
+	public function setMessages($messages) {
+		$this->messages[] = $messages;
 	}
 
 	public function setStatus($status) {

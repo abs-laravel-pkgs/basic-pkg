@@ -5,6 +5,7 @@ use Abs\BasicPkg\Classes\ApiResponse;
 use Abs\BasicPkg\Services\CrudService;
 use App\Models\BaseModel;
 use DB;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Input;
 
@@ -94,6 +95,18 @@ trait CrudTrait {
 	public function save() {
 		\InputHelper::checkAndReplaceInput();
 		return self::_save(new $this->model)->response();
+	}
+
+	public function saveFromFormData(Request $request) {
+		$modelName = $this->model;
+		$result = $modelName::saveFromFormArray($request->all());
+		return response()->json($result);
+	}
+
+	public function saveFromNgData(Request $request) {
+		$modelName = $this->model;
+		$result = $modelName::saveFromNgArray($request->all());
+		return response()->json($result);
 	}
 
 	public function read($id) {
