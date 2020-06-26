@@ -63,6 +63,28 @@ abstract class BaseModel extends Model {
 
 	// Attributes --------------------------------------------------------------
 
+	// Query Scopes --------------------------------------------------------------
+
+	public function scopeFilterSearch($query, $term) {
+		if (strlen($term)) {
+			$query->where(function ($query) use ($term) {
+				$query->orWhere('code', 'LIKE', '%' . $term . '%');
+				$query->orWhere('name', 'LIKE', '%' . $term . '%');
+			});
+		}
+	}
+
+	public function scopeCompany($query, $table_name = null) {
+		if ($table_name) {
+			$table_name .= '.';
+		} else {
+			$table_name = '';
+		}
+		return $query->where($table_name . 'company_id', Auth::user()->company_id);
+	}
+
+	// Static Operations --------------------------------------------------------------
+
 	public static function keyName() {
 		return (new static )->getKeyName();
 	}
