@@ -2,7 +2,7 @@
 
 namespace Abs\BasicPkg;
 
-use App\BaseModel;
+use Abs\BasicPkg\BaseModel;
 
 class Config extends BaseModel {
 	protected $fillable = [
