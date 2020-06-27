@@ -21,6 +21,24 @@ use Validator;
 abstract class BaseModel extends Model {
 	use EloquentValidationTrait;
 
+
+	protected static $excelColumnRules = [
+		'Code' => [
+			'table_column_name' => 'code',
+			'rules' => [
+				'required' => [
+				],
+			],
+		],
+		'Name' => [
+			'table_column_name' => 'name',
+			'rules' => [
+				'required' => [
+				],
+			],
+		],
+	];
+
 	//
 	/**
 	 * Used by FranchiseableTrait to set the column that the franchise-specific reference number will be stored in
