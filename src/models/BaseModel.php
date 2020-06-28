@@ -21,29 +21,42 @@ use Validator;
 abstract class BaseModel extends Model {
 	use EloquentValidationTrait;
 
+	public static $AUTO_GENERATE_CODE = false;
 
-	protected static $excelColumnRules = [
-		'Code' => [
-			'table_column_name' => 'code',
-			'rules' => [
-				'required' => [
-				],
-			],
-		],
-		'Name' => [
-			'table_column_name' => 'name',
-			'rules' => [
-				'required' => [
-				],
-			],
-		],
+	protected $fillable = [
+		"company_id",
+		"code",
+		"name",
 	];
 
-	//
-	/**
-	 * Used by FranchiseableTrait to set the column that the franchise-specific reference number will be stored in
-	 */
-	public const REFERENCE = 'reference';
+	protected $dates = [
+		'created_at',
+		'updated_at',
+		'deleted_at',
+	];
+
+	protected $casts = [
+	];
+
+	// Getter & Setters --------------------------------------------------------------
+
+	// Relations --------------------------------------------------------------
+
+	public function company() {
+		return $this->belongsTo('App\Company');
+	}
+
+	public function createdBy() {
+		return $this->belongsTo('App\User', 'created_by_id');
+	}
+
+	public function updatedBy() {
+		return $this->belongsTo('App\User', 'updated_by_id');
+	}
+
+	public function deletedBy() {
+		return $this->belongsTo('App\User', 'deleted_by_id');
+	}
 
 	public $timestamps = false;
 	public $autovalidate = true;
@@ -93,12 +106,14 @@ abstract class BaseModel extends Model {
 	}
 
 	public function scopeCompany($query, $table_name = null) {
-		if ($table_name) {
-			$table_name .= '.';
-		} else {
-			$table_name = '';
-		}
-		return $query->where($table_name . 'company_id', Auth::user()->company_id);
+		// if ($table_name) {
+		// 	$table_name .= '.';
+		// } else {
+		// 	$table_name = '';
+		// }
+		// return $query->where($table_name . 'company_id', Auth::user()->company_id);
+		return $query->where($this->table . '.company_id', Auth::user()->company_id);
+
 	}
 
 	// Static Operations --------------------------------------------------------------
