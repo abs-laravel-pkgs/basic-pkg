@@ -23,6 +23,24 @@ abstract class BaseModel extends Model {
 
 	public static $AUTO_GENERATE_CODE = false;
 
+	protected static $excelColumnRules = [
+		'Code' => [
+			'table_column_name' => 'code',
+			'rules' => [
+				'required' => [
+				],
+			],
+		],
+		'Name' => [
+			'table_column_name' => 'name',
+			'rules' => [
+				'required' => [
+				],
+			],
+		],
+	];
+
+
 	protected $fillable = [
 		"company_id",
 		"code",
