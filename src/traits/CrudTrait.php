@@ -254,8 +254,10 @@ trait CrudTrait {
 			$query = $query->orderDefault();
 		}
 
+		if (method_exists($Model, 'selectableFields')) {
+			$query = $query->select($modelName::selectableFields('options'));
+		}
 		$ModelResult = $query->get();
-		// $ModelResult = $ModelResult->get();
 
 		// Relationships
 		if (method_exists($modelName, 'relationships')) {

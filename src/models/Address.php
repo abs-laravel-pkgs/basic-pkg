@@ -1,15 +1,15 @@
 <?php
 
 namespace Abs\BasicPkg;
+use App\BaseModel;
 use App\City;
 use App\Company;
 use App\Config;
 use App\Country;
 use App\Outlet;
 use App\State;
-use Illuminate\Database\Eloquent\Model;
 
-class Address extends Model {
+class Address extends BaseModel {
 	protected $table = 'addresses';
 	public $timestamps = false;
 	protected $fillable = [
@@ -20,6 +20,9 @@ class Address extends Model {
 		'city_id',
 		'country_id',
 		'pincode',
+	];
+	protected $appends = [
+		'formatted',
 	];
 
 	public function country() {
@@ -34,7 +37,7 @@ class Address extends Model {
 		return $this->belongsTo('App\City');
 	}
 
-	public function getFormattedAddressAttribute() {
+	public function getFormattedAttribute() {
 		$formatted_address = '';
 		$formatted_address .= !empty($this->address_line_1) ? $this->address_line_1 : '';
 		$formatted_address .= !empty($this->address_line_2) ? ', ' . $this->address_line_2 : '';
