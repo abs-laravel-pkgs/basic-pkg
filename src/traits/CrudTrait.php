@@ -109,10 +109,14 @@ trait CrudTrait {
 		return response()->json($result);
 	}
 
-	public function read($id) {
+	public function read($id, $withtrashed = null) {
 		$model = $this->model;
 
-		$Model = $model::findOrFail($id);
+		if ($withtrashed) {
+			$Model = $model::withTrashed()->findOrFail($id);
+		} else {
+			$Model = $model::findOrFail($id);
+		}
 		if (!in_array('read', $Model->crudActions)) {
 			throw new Exception('Read action is not available on ' . $this->model);
 		}
