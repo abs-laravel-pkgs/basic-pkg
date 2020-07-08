@@ -8,6 +8,7 @@ use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Input;
+use Request as tRequest;
 
 trait CrudTrait {
 
@@ -109,7 +110,7 @@ trait CrudTrait {
 		return response()->json($result);
 	}
 
-	public function read($id) {
+	public function read($id, $format = 'json') {
 		$model = $this->model;
 
 		$Model = $model::findOrFail($id);
@@ -127,6 +128,13 @@ trait CrudTrait {
 		// Relationships
 		if (method_exists($modelName, 'relationships')) {
 			$Model->load($modelName::relationships('read'));
+		}
+
+		if ($format == 'object') {
+			return [
+				'success' => true,
+				$modelSnakeName => $Model,
+			];
 		}
 
 		$response->setData($modelSnakeName, $Model);
@@ -245,7 +253,12 @@ trait CrudTrait {
 		// }
 
 		$query = $modelName::query();
-		CrudService::filterQuery($query);
+		$filter = tRequest::input('filter', []);
+		if (isset($modelName::$HAS_COMPANY) && $modelName::$HAS_COMPANY) {
+			$filter['company'] = true;
+		}
+
+		CrudService::filterQuery($query, $filter);
 		$filteredQuery = clone $query;
 		CrudService::sortQuery($query);
 
