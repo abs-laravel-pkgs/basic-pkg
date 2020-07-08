@@ -21,6 +21,16 @@ use Validator;
 abstract class BaseModel extends Model {
 	use EloquentValidationTrait;
 
+	// Getter & Setters --------------------------------------------------------------
+
+	// Relations --------------------------------------------------------------
+
+	// Dynamic Attributes --------------------------------------------------------------
+
+	// Query Scopes --------------------------------------------------------------
+
+	// Static Operations --------------------------------------------------------------
+
 	public static $AUTO_GENERATE_CODE = false;
 
 	protected static $excelColumnRules = [
