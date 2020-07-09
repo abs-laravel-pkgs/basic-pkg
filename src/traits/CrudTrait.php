@@ -113,6 +113,7 @@ trait CrudTrait {
 	// public function read($id, $format = 'json') {
 	public function read($id, $withtrashed = null) {
 		$model = $this->model;
+		$format = '';
 
 		if ($withtrashed) {
 			$Model = $model::withTrashed()->findOrFail($id);
