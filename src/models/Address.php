@@ -266,7 +266,9 @@ class Address extends BaseModel {
 		$formatted_address .= !empty($this->address_line_2) ? ', ' . $this->address_line_2 : '';
 		$formatted_address .= $this->city ? ', ' . $this->city->name : '';
 		$formatted_address .= $this->state ? ', ' . $this->state->name : '';
-		$formatted_address .= $this->state->country ? ', ' . $this->state->country->name : '';
+		if ($this->state) {
+			$formatted_address .= $this->state->country ? ', ' . $this->state->country->name : '';
+		}
 		$formatted_address .= $this->pincode ? ', ' . $this->pincode : '';
 		return $formatted_address;
 	}
