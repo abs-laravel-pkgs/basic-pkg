@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html dir="ltr" lang="{{ app()->getLocale() }}" ng-app="app">
     <head>
-        @include($theme.'/partials/common/head')
+        @include('themes/'.$theme.'/includes/common/app-head')
         @yield('header_css')
     </head>
     <body>
-        @include($theme.'/partials/common/common-header')
+        @include('themes/'.$theme.'/includes/common/common-header')
         <div class="main-wrap">
-            @include($theme.'/partials/common/header')
+            @include('themes/'.$theme.'/includes/common/theme-header')
             @yield('content')
         </div><!-- Main Wrap -->
-        @include($theme.'/partials/common/footer')
-        @include($theme.'/partials/common/common-js')
+        @include('themes/'.$theme.'/includes/common/theme-footer')
+        @include('themes/'.$theme.'/includes/common/common-js')
         @yield('footer_js')
     </body>
 
