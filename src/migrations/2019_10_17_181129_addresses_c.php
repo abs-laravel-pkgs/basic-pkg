@@ -18,6 +18,7 @@ class AddressesC extends Migration {
 				$table->unsignedInteger('company_id');
 				$table->unsignedInteger('address_of_id');
 				$table->unsignedInteger('entity_id');
+				$table->unsignedInteger('address_type_id')->nullable();
 				$table->string('name', 191);
 				$table->unsignedInteger('contact_person_id')->nullable();
 				$table->string('address_line_1', 255);
@@ -28,6 +29,7 @@ class AddressesC extends Migration {
 				$table->string('pincode', 10)->nullable();
 
 				$table->foreign('address_of_id')->references('id')->on('configs')->onDelete('CASCADE')->onUpdate('cascade');
+				$table->foreign('address_type_id')->references('id')->on('configs')->onDelete('CASCADE')->onUpdate('cascade');
 
 				$table->unique(["entity_id", "address_of_id", "name"]);
 			});
