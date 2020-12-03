@@ -187,14 +187,6 @@ abstract class BaseModel extends Model {
 		//return get_called_class();
 	}
 
-	public function getNitroClass() {
-		return array_get(config('nitro.morphMap'), get_class($this), 'UNDEFINED');
-	}
-
-	public function getNitroClassAttribute() {
-		return $this->getNitroClass();
-	}
-
 	public function getDeletedAttribute() {
 		return $this->attributes['deleted_at'] != null;
 	}
