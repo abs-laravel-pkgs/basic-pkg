@@ -255,7 +255,8 @@ trait EloquentValidationTrait {
 
 		// check for failure
 		if ($v->fails()) {
-			Log::debug($v->errors());
+			dd($v->errors());
+			// Log::debug($v->errors());
 			//// set errors and return false
 			//if ($this->errors) {
 			//	$this->errors = $this->errors->merge($v->errors());
