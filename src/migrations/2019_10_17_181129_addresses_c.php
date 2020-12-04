@@ -16,22 +16,22 @@ class AddressesC extends Migration {
 			Schema::create('addresses', function (Blueprint $table) {
 				$table->increments('id');
 				$table->unsignedInteger('company_id');
-				$table->unsignedInteger('address_of_id');
-				$table->unsignedInteger('entity_id');
+				$table->string('addressable_type');
+				$table->unsignedInteger('addressable_id');
 				$table->unsignedInteger('address_type_id')->nullable();
 				$table->string('name', 191);
 				$table->unsignedInteger('contact_person_id')->nullable();
 				$table->string('address_line_1', 255);
 				$table->string('address_line_2', 255)->nullable();
-				$table->unsignedInteger('state_id')->nullable();
+				$table->unsignedInteger('district_id')->nullable();
+				$table->unsignedInteger('sub_district_id')->nullable();
 				$table->unsignedInteger('city_id')->nullable();
-				$table->unsignedInteger('country_id');
-				$table->string('pincode', 10)->nullable();
+				$table->string('pincode', 10);
 
-				$table->foreign('address_of_id')->references('id')->on('configs')->onDelete('CASCADE')->onUpdate('cascade');
-				$table->foreign('address_type_id')->references('id')->on('configs')->onDelete('CASCADE')->onUpdate('cascade');
-
-				$table->unique(["entity_id", "address_of_id", "name"]);
+				$table->foreign('address_type_id')->references('id')->on('configs')->onUpdate('cascade');
+				$table->foreign('district_id')->references('id')->on('district')->onUpdate('cascade');
+				$table->foreign('sub_district_id')->references('id')->on('sub_districts')->onUpdate('cascade');
+				$table->foreign('city_id')->references('id')->on('cities');
 			});
 		}
 	}

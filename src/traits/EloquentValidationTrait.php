@@ -3,6 +3,7 @@ namespace Abs\BasicPkg\Traits;
 
 use App\Exceptions\ValidationException;
 use DB;
+use Validator;
 
 trait EloquentValidationTrait {
 
@@ -216,7 +217,7 @@ trait EloquentValidationTrait {
 
 	public function validateInput($data) {
 		// make a new validator object
-		$v = Validator::make($data, $this->rules);
+		$v = Validator::make($data, $this->getRulesArray());
 
 		// check for failure
 		if ($v->fails()) {
@@ -251,11 +252,12 @@ trait EloquentValidationTrait {
 		$messages = $this->validationMessages;
 
 		// make a new validator object
-		$v = \Validator::make($this->attributes, $this->rules, $messages);
+		$v = Validator::make($this->attributes, $this->rules, $messages);
 
 		// check for failure
 		if ($v->fails()) {
-			Log::debug($v->errors());
+			//dd($v->errors());
+			//Log::debug($v->errors());
 			//// set errors and return false
 			//if ($this->errors) {
 			//	$this->errors = $this->errors->merge($v->errors());
@@ -282,7 +284,7 @@ trait EloquentValidationTrait {
 		unset($itemRules);
 
 		$messages = $this->validationMessages;
-
+//dd($relationshipRules);
 		// make a new validator object
 		$v = \Validator::make($data, $relationshipRules, $messages);
 

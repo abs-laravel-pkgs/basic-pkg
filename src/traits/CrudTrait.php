@@ -68,6 +68,13 @@ trait CrudTrait {
 			$pageResult->load($modelName::relationships('index', Input::get('format')));
 		}
 
+		// Loading Relationship Counts
+		if (method_exists($modelName, 'appendRelationshipCounts')) {
+			$pageResult->loadCount($modelName::appendRelationshipCounts('index'), Input::get('format'));
+		}
+
+
+
 		if (Input::get('format') === 'csv') {
 			if ($pageResult->count() === 0) {
 				return 'No data to export';
@@ -136,6 +143,12 @@ trait CrudTrait {
 		if (method_exists($modelName, 'relationships')) {
 			$Model->load($modelName::relationships('read'));
 		}
+
+		// Loading Relationship Counts
+		if (method_exists($modelName, 'appendRelationshipCounts')) {
+			$Model->loadCount($modelName::appendRelationshipCounts('read'));
+		}
+
 
 		if ($format == 'object') {
 			return [
@@ -232,6 +245,12 @@ trait CrudTrait {
 				if (method_exists($Model, 'relationships')) {
 					$Model->load($Model::relationships('read'));
 				}
+
+				// Loading Relationship Counts
+				if (method_exists($Model, 'appendRelationshipCounts')) {
+					$Model->loadCount($Model::appendRelationshipCounts('read'));
+				}
+
 				$modelSnakeName = $Model->snakeName();
 				$response->setData($modelSnakeName, $Model);
 				if (method_exists($controller, 'alterCrudResponse')) {
@@ -279,9 +298,14 @@ trait CrudTrait {
 		}
 		$ModelResult = $query->get();
 
-		// Relationships
+		// Loading Relationships
 		if (method_exists($modelName, 'relationships')) {
 			$ModelResult->load($modelName::relationships('options'));
+		}
+
+		// Loading Relationship Counts
+		if (method_exists($modelName, 'appendRelationshipCounts')) {
+			$ModelResult->loadCount($modelName::appendRelationshipCounts('options'));
 		}
 
 		$response = new ApiResponse();

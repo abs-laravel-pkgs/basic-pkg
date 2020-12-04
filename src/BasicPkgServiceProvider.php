@@ -19,6 +19,9 @@ class BasicPkgServiceProvider extends ServiceProvider {
 			__DIR__ . '/public' => base_path('public'),
 			__DIR__ . '/config/config.php' => config_path('gigo-pkg.php'),
 		]);
+		$this->app->register(
+			'Abs\BasicPkg\Providers\RelationshipValidationServiceProvider'
+		);
 	}
 
 	/**
