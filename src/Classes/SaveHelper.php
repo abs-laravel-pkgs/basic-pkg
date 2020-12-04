@@ -104,45 +104,45 @@ class SaveHelper {
 				self::saveBelongsToRelation($Model, $Relation, $relationInput);
 				$input[$relationInputName] = $relationInput;
 			}
-
-			if (isset($relationInput) && is_a($Relation, 'Illuminate\Database\Eloquent\Relations\BelongsToMany') && $afterSave === true) {
-				self::saveBelongsToManyRelation($Model, $Relation, $relationInput);
-				$input[$relationInputName] = $relationInput;
-			} else if (isset($relationInput) && is_a($Relation, 'Illuminate\Database\Eloquent\Relations\HasOneOrMany') && $afterSave === true) {
-				self::saveHasOneOrManyRelation($Model, $Relation, $relationInput);
-				$input[$relationInputName] = $relationInput;
-			}
-
-		}
-
-		//foreach ($Model->fillableRelationships as $k => $v) {
-			//if (is_string($k)) {
-			//	// Associative array, take the key-value pairs literally
-			//	$relationInputName = $k;
-			//	$relationMethodName = $v;
-			//}
-			//else {
-			//	// Indexed array, generate both names from value
-			//	$relationInputName = snake_case($v);
-			//	$relationMethodName = camel_case($v);
-			//}
-			//$Relation = $Model->$relationMethodName();
-			//if (array_key_exists($relationInputName, $input)) { // if the input is present...
-			//	$relationInput = isset($input[$relationInputName]) ? $input[$relationInputName] : false;
-			//}
-			//else { // else, if input not present, will be skipped
-			//	$relationInput = null;
-			//}
-			//// if the input is present and we know how to save the relationship type, save it
+			//
 			//if (isset($relationInput) && is_a($Relation, 'Illuminate\Database\Eloquent\Relations\BelongsToMany') && $afterSave === true) {
 			//	self::saveBelongsToManyRelation($Model, $Relation, $relationInput);
 			//	$input[$relationInputName] = $relationInput;
-			//}
-			//else if (isset($relationInput) && is_a($Relation, 'Illuminate\Database\Eloquent\Relations\HasOneOrMany') && $afterSave === true) {
+			//} else if (isset($relationInput) && is_a($Relation, 'Illuminate\Database\Eloquent\Relations\HasOneOrMany') && $afterSave === true) {
 			//	self::saveHasOneOrManyRelation($Model, $Relation, $relationInput);
 			//	$input[$relationInputName] = $relationInput;
 			//}
-		//}
+
+		}
+
+		foreach ($Model->fillableRelationships as $k => $v) {
+			if (is_string($k)) {
+				// Associative array, take the key-value pairs literally
+				$relationInputName = $k;
+				$relationMethodName = $v;
+			}
+			else {
+				// Indexed array, generate both names from value
+				$relationInputName = snake_case($v);
+				$relationMethodName = camel_case($v);
+			}
+			$Relation = $Model->$relationMethodName();
+			if (array_key_exists($relationInputName, $input)) { // if the input is present...
+				$relationInput = isset($input[$relationInputName]) ? $input[$relationInputName] : false;
+			}
+			else { // else, if input not present, will be skipped
+				$relationInput = null;
+			}
+			// if the input is present and we know how to save the relationship type, save it
+			if (isset($relationInput) && is_a($Relation, 'Illuminate\Database\Eloquent\Relations\BelongsToMany') && $afterSave === true) {
+				self::saveBelongsToManyRelation($Model, $Relation, $relationInput);
+				$input[$relationInputName] = $relationInput;
+			}
+			else if (isset($relationInput) && is_a($Relation, 'Illuminate\Database\Eloquent\Relations\HasOneOrMany') && $afterSave === true) {
+				self::saveHasOneOrManyRelation($Model, $Relation, $relationInput);
+				$input[$relationInputName] = $relationInput;
+			}
+		}
 	}
 
 	/**
