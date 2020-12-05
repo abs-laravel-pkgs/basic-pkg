@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
@@ -180,10 +181,9 @@ class SaveHelper {
 	 *
 	 * Only touches $Model, parent models will be unaffected
 	 *
-	 * @param BaseModel $Model
-	 * @param Illuminate\Database\Eloquent\Relations\BelongsToMany $Relation
-	 * @param mixed $relationInput array = save relation; false = remove relation
-	 * @throws Exception
+	 * @param  BaseModel  $Model
+	 * @param  BelongsToMany  $Relation
+	 * @param  mixed  $relationInput  array = save relation; false = remove relation
 	 */
 	public static function saveBelongsToManyRelation(BaseModel $Model, BelongsToMany $Relation, & $relationInput) {
 		if (is_array($relationInput) || $relationInput === false) { // if we have an array of related models or just want to clear all
@@ -212,9 +212,9 @@ class SaveHelper {
 	 *
 	 * Only touches $Model's descendants
 	 *
-	 * @param BaseModel $Model
-	 * @param Illuminate\Database\Eloquent\Relations\HasOneOrMany $Relation
-	 * @param mixed $relationInput array = save relation; false = remove relation
+	 * @param  BaseModel  $Model
+	 * @param  HasOneOrMany  $Relation
+	 * @param  mixed  $relationInput  array = save relation; false = remove relation
 	 */
 	public static function saveHasOneOrManyRelation(BaseModel $Model, HasOneOrMany $Relation, & $relationInput) {
 		// TODO: DELETE EMPTY ARRAY/FALSE RELATIONS
@@ -224,15 +224,52 @@ class SaveHelper {
 			foreach ($relationInput as &$relationInputItem) {
 				self::saveHasRelation($Model, $Relation, $relationInputItem);
 			}unset($relationInputItem);
+		} else if (is_a($Relation, 'Illuminate\Database\Eloquent\Relations\MorphOne')) {
+			self::saveMorphOneRelation($Model, $Relation, $relationInput);
 		}
 	}
 
 	/**
 	 * saveHasOneOrManyRelation helper function
 	 *
-	 * @param BaseModel $Model
-	 * @param Illuminate\Database\Eloquent\Relations\HasOneOrMany $Relation
-	 * @param array $relationInput
+	 * @param  BaseModel  $Model
+	 * @param  MorphOne  $Relation
+	 * @param  array  $relationInput
+	 */
+	private static function saveMorphOneRelation(BaseModel $Model, MorphOne $Relation, & $relationInput) {
+
+		if ($Model->exists !== true) {
+			$Model->save();
+		}
+		// insert parent model into the input so that it can fill the related model
+		$Model->unsetRelations(); // Temporary(?) fix as objects up the chain won't have attributes necessary for any virtual attributes they employ, thus breaking toArray()
+		$relationInput[$Model->snakeName()] = $Model->toArray();
+		$RelationRelated = $Relation->getRelated();
+		$relatedClass = get_class($RelationRelated);
+		$relatedModelKeyName = $RelationRelated->getKeyName(); // Primary key column name
+		// related model should be validated already, no need to reload from DB by id
+		if (isset($relationInput[$relatedModelKeyName])) {
+			$RelatedModel = $relatedClass::findOrFail($relationInput[$relatedModelKeyName]);
+		} else {
+			$RelatedModel = new $relatedClass;
+		}
+		$RelatedModel->fill($relationInput);
+		$morphableType = $Relation->getMorphType();
+		$foreignKey = $Relation->getForeignKeyName();
+		$RelatedModel->$morphableType = $Model->getClassAttribute();
+		$RelatedModel->$foreignKey = $Model->id;
+		self::saveModel($RelatedModel, $relationInput);
+		//dd($RelatedModel);
+		//$modelKeyName = $RelatedModel->getKeyName();
+		//$relationInput[$modelKeyName] = $Model->$modelKeyName;
+	}
+
+	/**
+	 * saveHasOneOrManyRelation helper function
+	 *
+	 * @param  BaseModel  $Model
+	 * @param  HasOneOrMany  $Relation
+	 * @param  array  $relationInput
 	 */
 	private static function saveHasRelation(BaseModel $Model, HasOneOrMany $Relation, & $relationInput) {
 		if ($Model->exists !== true) {
