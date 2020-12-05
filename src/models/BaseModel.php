@@ -676,10 +676,6 @@ abstract class BaseModel extends Model {
 		$q->withoutGlobalScope('selectBaseTable');
 	}
 
-	public function scopeWithoutCurrentFranchise(Builder $q) {
-		$q->withoutGlobalScope('currentFranchise');
-	}
-
 	public function getModelNameAttribute() {
 		return get_called_class();
 	}
