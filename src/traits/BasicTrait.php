@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use ReflectionClass;
 
 trait BasicTrait {
-	use EloquentValidationTrait;
+	//use EloquentValidationTrait;
 
 	public static $AUTO_GENERATE_CODE = false;
 

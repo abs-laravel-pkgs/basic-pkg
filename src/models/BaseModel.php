@@ -71,7 +71,7 @@ abstract class BaseModel extends Model {
 	// Relations --------------------------------------------------------------
 
 	public function company() {
-		return $this->belongsTo('App\Company');
+		return $this->belongsTo('App\Models\Company');
 	}
 
 	public function createdBy() {

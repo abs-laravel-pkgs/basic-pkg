@@ -19,7 +19,7 @@ class AuthController extends Controller {
 		if ($validator->fails()) {
 			return response()->json([
 				'success' => false,
-				'error' => 'Reuired parameters missing',
+				'error' => 'Required parameters are missing',
 				'errors' => $validator->errors(),
 			], $this->successStatus);
 		}

@@ -91,9 +91,9 @@ trait CrudTrait {
 			return true;
 		} else {
 			$response = new ApiResponse();
-			$response->setData(snake_case($safeName) . '_collection', $pageResult);
 			$response->setData(snake_case($safeName) . '_filtered_count', $filteredCount);
 			$response->setData(snake_case($safeName) . '_total_count', $totalCount);
+			$response->setData(snake_case($safeName) . '_collection', $pageResult);
 			if (method_exists($this, 'alterCrudResponse')) {
 				$this->alterCrudResponse('index', $response);
 			}
