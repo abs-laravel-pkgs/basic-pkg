@@ -91,9 +91,12 @@ trait CrudTrait {
 			return true;
 		} else {
 			$response = new ApiResponse();
-			$response->setData(snake_case($safeName) . '_filtered_count', $filteredCount);
-			$response->setData(snake_case($safeName) . '_total_count', $totalCount);
-			$response->setData(snake_case($safeName) . '_collection', $pageResult);
+			//$response->setData(snake_case($safeName) . '_filtered_count', $filteredCount);
+			//$response->setData(snake_case($safeName) . '_total_count', $totalCount);
+			//$response->setData(snake_case($safeName) . '_collection', $pageResult);
+			$response->setData('filtered_count', $filteredCount);
+			$response->setData('total_count', $totalCount);
+			$response->setData('collection', $pageResult);
 			if (method_exists($this, 'alterCrudResponse')) {
 				$this->alterCrudResponse('index', $response);
 			}
@@ -232,6 +235,8 @@ trait CrudTrait {
 				if (method_exists($controller, 'beforeSave')) {
 					$controller->beforeSave($Model, $input);
 				}
+				//dd($Model);
+
 				$modelKeyName = $Model->getKeyName();
 				$oldKey = array_get($input, $modelKeyName);
 				$Model = SaveHelper::uberSave($Model->safeName(), $input);
@@ -316,6 +321,7 @@ trait CrudTrait {
 		return $response->response();
 	}
 
+	//Event Callback function
 	/**
 	 * Presents an opportunity to modify the contents of the input before running crud action
 	 * @param $action currently only works for save
@@ -344,4 +350,25 @@ trait CrudTrait {
 		// DO NOT PLACE CODE IN HERE, THIS IS FOR DOCUMENTATION PURPOSES ONLY
 	}
 
+	/**
+	 * Presents an opportunity to modify the object before saving it to DB
+	 *
+	 * @param $Model
+	 * @param $input
+	 */
+	public function beforeSave($Model, $input){
+		// DO NOT PLACE CODE IN HERE, THIS IS FOR DOCUMENTATION PURPOSES ONLY
+	}
+
+	/**
+	 * Presents an opportunity to modify the object after saving it to DB
+	 *
+	 * @param $Model
+	 * @param $isNew
+	 * @param $input
+	 * @param  ApiResponse  $response
+	 */
+	public function afterSave($Model, $isNew, $input, ApiResponse $response){
+		// DO NOT PLACE CODE IN HERE, THIS IS FOR DOCUMENTATION PURPOSES ONLY
+	}
 }

@@ -1,5 +1,19 @@
 <?php
 
+use App\Http\Controllers\Api\Auth\AuthenticationController;
+
+Route::group(['middleware' => ['api'], 'prefix' => '/api/auth'], function () {
+	Route::post('login', AuthenticationController::class.'@login');
+	Route::post('forgot-password', AuthenticationController::class.'@forgotPassword');
+
+	Route::group(['middleware' => ['auth:api']], function () {
+
+		Route::post('validate-token', AuthenticationController::class.'@validateToken');
+		Route::post('change-password', AuthenticationController::class.'@changePassword');
+		Route::get('logout', AuthenticationController::class.'@logout');
+	});
+});
+
 Route::group(['namespace' => 'Abs\BasicPkg\API', 'middleware' => ['api']], function () {
 	Route::group(['prefix' => 'basic/api'], function () {
 

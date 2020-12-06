@@ -17,7 +17,7 @@ class AuthenticationController extends Controller {
 
 	public function login(Request $request) {
 		$validator = Validator::make($request->all(), [
-			'username' => 'required|string|max:1',
+			'username' => 'required|string',
 			'password' => 'required|string',
 		]);
 
@@ -52,12 +52,23 @@ class AuthenticationController extends Controller {
 		$user->addAppends([
 			'permissions',
 		]);
+		//$user->setData('token',$user->createToken('FMS')->accessToken);
+		$user->token = $user->createToken('FMS')->accessToken;
 		$user->setHidden(['roles']);
 		$response->setData('user', $user);
 
 		return $response->response();
 	}
 
+	public function validateToken(Request $request){
+		$user = Auth::user();
+		//$user->setData('token', $user->token());
+		$header = $header = $request->header('Authorization', '');;
+		$user->token = str_replace('Bearer ','', $header);
+		$response = new ApiResponse(['user' => $user]);
+		return $response->response();
+
+	}
 	/**
 	 * Logout and clear session
 	 *

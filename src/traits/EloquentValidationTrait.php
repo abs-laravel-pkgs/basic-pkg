@@ -250,7 +250,7 @@ trait EloquentValidationTrait {
 		}
 
 		$messages = $this->validationMessages;
-
+//dd($this->attributes,$this->rules);
 		// make a new validator object
 		$v = Validator::make($this->attributes, $this->rules, $messages);
 

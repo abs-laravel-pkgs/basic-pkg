@@ -19,7 +19,12 @@ use Request;
 use Validator;
 
 abstract class BaseModel extends Model {
+	public static $has_company;
 	use EloquentValidationTrait;
+
+	public static function hasCompany(){
+		return self::$has_company = false;
+	}
 
 	// Getter & Setters --------------------------------------------------------------
 

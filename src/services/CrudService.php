@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Request;
 use App\Exceptions\ValidationException;
 use Validator;
+use Abs\BasicPkg\Helpers\AbsStringHelper as StringHelper;
 
 class CrudService {
 
@@ -75,9 +76,9 @@ class CrudService {
 
 		$model = $query->getModel();
 		foreach ($filter as $k => $v) {
-			$methodName = 'scopeFilter' . upper_camel_case($k);
+			$methodName = 'scopeFilter' . StringHelper::upper_camel_case($k);
 			if (method_exists($model, $methodName)) {
-				$scopeName = 'filter' . upper_camel_case($k);
+				$scopeName = 'filter' . StringHelper::upper_camel_case($k);
 				$filterValue = $v;
 				// convert into boolean if necessary
 				$filterValue = $filterValue === 'true' ? true : $filterValue;
@@ -85,7 +86,7 @@ class CrudService {
 				$query->$scopeName($filterValue);
 			}
 			else {
-				throw new Exception('Filter scope "scopeFilter' . upper_camel_case($k) . '" not defined');
+				throw new Exception('Filter scope "scopeFilter' . StringHelper::upper_camel_case($k) . '" not defined');
 			}
 		}
 	}
@@ -93,7 +94,7 @@ class CrudService {
 	public static function sortQuery(Builder $query, $order = null) {
 		$orderArray = [];
 		if (is_null($order)) {
-			$order = Request::input('sorting');
+			$order = Request::input('order');
 		}
 
 		if (is_array($order)) {
@@ -107,9 +108,9 @@ class CrudService {
 			$model = $query->getModel();
 			$table = $model->getTable();
 			$columns = $model->getSchemaColumns();
-			
+
 			foreach ($orderArray as $sort => $dir) {
-				$scopeMethod = 'orderBy' . upper_camel_case($sort);
+				$scopeMethod = 'orderBy' . StringHelper::upper_camel_case($sort);
 				if (method_exists($model, 'scope' . $scopeMethod)) {
 					$query->$scopeMethod($dir);
 				}

@@ -42,7 +42,7 @@ class User extends BaseModel implements
 	use CompanyableTrait;
 
 	protected $table = 'users';
-	public $timestamps = true;
+	//public $timestamps = true;
 
 	protected $fillable = [
 		'first_name',

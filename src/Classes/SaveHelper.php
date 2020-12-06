@@ -46,13 +46,13 @@ class SaveHelper {
 		}
 		else if (!Arr::get($input, 'delete')) {
 			$Model->fill($input);
-			if(!Arr::get($input, 'company.id')){
-				if($Model->has_company){
-					$Model->company_id = Auth::user()->company->id;
-				}
-			}
 			$Model->validateAttrs();
 			$Model->validateRelationships($input);
+			if(!Arr::get($input, 'company.id')){
+				if($Model::hasCompany()){
+					$Model->company_id = Auth::user()->company_id;
+				}
+			}
 			self::saveRelations($Model, $input);
 			$Model->save();
 			$modelKeyName = $Model->getKeyName();

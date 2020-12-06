@@ -8,20 +8,24 @@ use Illuminate\Validation\Validator;
 class ValidationException extends Exception {
 
 	private $messages = [];
-	public $errors = [];
 
 	public function __construct(Validator $validator = null) {
 		if ($validator) {
 			$allErrors = $validator->errors()
 				->all();
+			$this->setMessage('Validation error.'.implode(', ',$allErrors));
 			foreach ($allErrors as $error) {
-				$this->setError($error);
+				$this->setMessages($error);
 			}
 		}
 	}
 
-	public function setError($message) {
-		$this->errors[] = $message;
+	public function setMessage($message) {
+		$this->message = $message;
+	}
+
+	public function setMessages($message) {
+		$this->messages[] = $message;
 	}
 
 	public function getMessages() {
