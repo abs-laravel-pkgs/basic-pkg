@@ -53,6 +53,7 @@ class SaveHelper {
 					$Model->company_id = Auth::user()->company_id;
 				}
 			}
+
 			self::saveRelations($Model, $input);
 			$Model->save();
 			$modelKeyName = $Model->getKeyName();
