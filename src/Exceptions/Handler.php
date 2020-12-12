@@ -2,10 +2,11 @@
 
 namespace Abs\BasicPkg\Exceptions;
 
-use ApiResponse;
+use App\Classes\ApiResponse;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -37,17 +38,6 @@ class Handler extends ExceptionHandler
         'password_confirmation',
     ];
 
-    /**
-     * Report or log an exception.
-     *
-     * @param  \Exception  $exception
-     * @return void
-     */
-    public function report(Exception $e)
-    {
-		parent::report($e);
-    }
-
 	/**
 	 * Render an exception into an HTTP response.
 	 *
@@ -58,10 +48,26 @@ class Handler extends ExceptionHandler
 	 */
     public function render($request, Exception $e)
     {
+		if ($e instanceof AuthenticationException) {
+			$output = new ApiResponse();
+			$output->setError($e->getMessages());
+			$output->setHttpStatus($e->getHttpStatus());
+
+			return $output->response();
+		}
+
 		if ($e instanceof UserFriendlyException) {
 			$output = new ApiResponse();
 			$output->setError($e->getMessages());
 			$output->setHttpStatus($e->getHttpStatus());
+
+			return $output->response();
+		}
+
+		if ($e instanceof ModelNotFoundException) {
+			$output = new ApiResponse();
+			$output->setError('Record not found');
+			$output->setHttpStatus(200);
 
 			return $output->response();
 		}
@@ -74,17 +80,12 @@ class Handler extends ExceptionHandler
 			return $output->response();
 		}
 
-		if ($e instanceof NotFoundHttpException) {
-			if (strpos($request->path(), 'api/') === 0) {
-				return parent::render($request, $e);
-			}
-			//else {
-			//	return Response::make(view('angular.index'));
-			//}
+		if (($e instanceof NotFoundHttpException) && strpos($request->path(), 'api/') === 0) {
+			return parent::render($request, $e);
 		}
 
 		if ($request->route() && in_array('api', $request->route()
-				->middleware())
+				->middleware(), true)
 		) {
 			$output = new ApiResponse();
 			$output->setError('Error: '.$e->getMessage().'. File: '.$e->getFile().'. Line: '.$e->getLine());
@@ -97,10 +98,9 @@ class Handler extends ExceptionHandler
 			//}
 			return $output->response();
 		}
-		else {
-			return parent::render($request, $e);
-		}
-    }
+
+		return parent::render($request, $e);
+	}
 
     protected function unauthenticated($request, AuthenticationException $exception)
 	{

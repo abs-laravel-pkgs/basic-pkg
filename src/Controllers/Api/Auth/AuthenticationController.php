@@ -3,7 +3,7 @@
 namespace Abs\BasicPkg\Controllers\Api\Auth;
 
 use App\Exceptions\ValidationException;
-use ApiResponse;
+use App\Classes\ApiResponse;
 use App\Http\Controllers\Controller;
 use App\Models\Masters\Auth\User;
 use Config;

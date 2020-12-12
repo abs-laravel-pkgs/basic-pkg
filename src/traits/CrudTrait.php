@@ -153,7 +153,7 @@ trait CrudTrait {
 		}
 
 
-		if ($format == 'object') {
+		if ($format === 'object') {
 			return [
 				'success' => true,
 				$modelSnakeName => $Model,
@@ -193,7 +193,14 @@ trait CrudTrait {
 		return $response->response();
 	}
 
-	public function delete($Model) {
+	public function delete($id, $withtrashed = false) {
+		$model = $this->model;
+		if ($withtrashed) {
+			$Model = $model::withTrashed()->findOrFail($id);
+		} else {
+			$Model = $model::findOrFail($id);
+		}
+
 		if (!in_array('delete', $Model->crudActions)) {
 			throw new Exception('Delete action is not available on ' . $this->model);
 		}
