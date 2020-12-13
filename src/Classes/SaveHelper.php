@@ -11,6 +11,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class SaveHelper {
 
@@ -83,6 +84,7 @@ class SaveHelper {
 
 	private static function relationIterator(BaseModel $Model, &$input, $afterSave = false) {
 		// do all belongsTo relations before any saving as they're likely to have foreign key constraints
+		//dump($Model->fillableRelationships);
 		foreach ($Model->fillableRelationships as $k => $v) {
 			if (is_string($k)) {
 				// Associative array, take the key-value pairs literally
@@ -90,8 +92,8 @@ class SaveHelper {
 				$relationMethodName = $v;
 			} else {
 				// Indexed array, generate both names from value
-				$relationInputName = snake_case($v);
-				$relationMethodName = camel_case($v);
+				$relationInputName = Str::snake($v);
+				$relationMethodName = Str::camel($v);
 			}
 			$Relation = $Model->$relationMethodName();
 			if (array_key_exists($relationInputName, $input)) {
@@ -103,6 +105,7 @@ class SaveHelper {
 			}
 			// if the input is present and we know how to save the relationship type, save it
 			if (isset($relationInput) && is_a($Relation, 'Illuminate\Database\Eloquent\Relations\BelongsTo') && $afterSave === false) {
+				//dump($relationInput);
 				self::saveBelongsToRelation($Model, $Relation, $relationInput);
 				$input[$relationInputName] = $relationInput;
 			}
@@ -160,8 +163,9 @@ class SaveHelper {
 		$foreignKey = $Relation->getForeignKeyName();
 		$otherKeyName = $Relation->getOwnerKeyName();
 		if (is_array($relationInput)) {
-			if (array_get($relationInput, $otherKeyName)) {
-				$otherKeyValue = array_get($relationInput, $otherKeyName);
+			if (Arr::get($relationInput, $otherKeyName)) {
+				$otherKeyValue = Arr::get($relationInput, $otherKeyName);
+				//dump($relationInput, $foreignKey, $otherKeyName, $otherKeyValue);
 				// related model should be validated already, no need to reload from DB by id
 				$Relation->associate($otherKeyValue);
 			} else {

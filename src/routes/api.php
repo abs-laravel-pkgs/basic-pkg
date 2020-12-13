@@ -1,5 +1,6 @@
 <?php
 
+use Abs\BasicPkg\Controllers\Api\AttachmentPkgApiController;
 use App\Http\Controllers\Api\Auth\AuthenticationController;
 
 Route::group(['middleware' => ['api'], 'prefix' => '/api/auth'], function () {
@@ -12,6 +13,10 @@ Route::group(['middleware' => ['api'], 'prefix' => '/api/auth'], function () {
 		Route::post('change-password', AuthenticationController::class.'@changePassword');
 		Route::get('logout', AuthenticationController::class.'@logout');
 	});
+});
+
+Route::group(['middleware' => ['api','auth:api'], 'prefix' => '/api/attachment'], function () {
+	Route::post('upload', AttachmentPkgApiController::class.'@upload');
 });
 
 Route::group(['namespace' => 'Abs\BasicPkg\API', 'middleware' => ['api']], function () {

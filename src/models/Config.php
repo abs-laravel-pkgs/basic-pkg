@@ -1,8 +1,8 @@
 <?php
 
-namespace Abs\BasicPkg;
+namespace Abs\BasicPkg\Models;
 
-use Abs\BasicPkg\BaseModel;
+use Abs\BasicPkg\Models\BaseModel;
 
 class Config extends BaseModel {
 	protected $fillable = [
@@ -10,7 +10,6 @@ class Config extends BaseModel {
 		'config_type_id',
 		'name',
 	];
-	public $timestamps = false;
 
 	// Relations --------------------------------------------------------------
 

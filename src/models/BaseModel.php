@@ -1,6 +1,6 @@
 <?php
 
-namespace Abs\BasicPkg;
+namespace Abs\BasicPkg\Models;
 
 use Abs\BasicPkg\Traits\EloquentValidationTrait;
 use App\Exceptions\ValidationException;
@@ -91,7 +91,6 @@ abstract class BaseModel extends Model {
 		return $this->belongsTo('App\User', 'deleted_by_id');
 	}
 
-	public $timestamps = false;
 	public $autovalidate = true;
 	public $validationRules = [];
 	public $setsReferences = false;

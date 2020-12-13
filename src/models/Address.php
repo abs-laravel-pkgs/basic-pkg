@@ -1,6 +1,6 @@
 <?php
 
-namespace Abs\BasicPkg;
+namespace Abs\BasicPkg\Models;
 use Abs\HelperPkg\Traits\SeederTrait;
 use App\BaseModel;
 use App\City;
@@ -13,7 +13,6 @@ class Address extends BaseModel {
 	use SeederTrait;
 
 	protected $table = 'addresses';
-	public $timestamps = false;
 	protected $fillable = [
 		'name',
 		'address_line_1',

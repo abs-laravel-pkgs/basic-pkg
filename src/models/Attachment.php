@@ -1,12 +1,11 @@
 <?php
 
-namespace Abs\BasicPkg;
+namespace Abs\BasicPkg\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
 class Attachment extends Model {
 	protected $table = 'attachments';
-	public $timestamps = false;
 	protected $fillable = [
 		'company_id',
 		'attachment_of_id',
@@ -14,4 +13,5 @@ class Attachment extends Model {
 		'entity_id',
 		'name',
 	];
+	public $timestamps = false;
 }

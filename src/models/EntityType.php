@@ -1,6 +1,6 @@
 <?php
 
-namespace Abs\BasicPkg;
+namespace Abs\BasicPkg\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -9,5 +9,4 @@ class EntityType extends Model {
 		'id',
 		'name',
 	];
-	public $timestamps = false;
 }
