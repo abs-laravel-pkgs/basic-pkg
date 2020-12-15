@@ -11,6 +11,7 @@ use App\State;
 
 class Address extends BaseModel {
 	use SeederTrait;
+	public $timestamps = false;
 
 	protected $table = 'addresses';
 	protected $fillable = [
