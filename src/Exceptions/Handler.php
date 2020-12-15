@@ -50,7 +50,7 @@ class Handler extends ExceptionHandler
     {
 		if ($e instanceof AuthenticationException) {
 			$output = new ApiResponse();
-			$output->setError($e->getMessages());
+			$output->setError($e->getMessage());
 			$output->setHttpStatus($e->getHttpStatus());
 
 			return $output->response();
@@ -84,9 +84,7 @@ class Handler extends ExceptionHandler
 			return parent::render($request, $e);
 		}
 
-		if ($request->route() && in_array('api', $request->route()
-				->middleware(), true)
-		) {
+		if ($request->route() && in_array('api', $request->route()->middleware(), true)) {
 			$output = new ApiResponse();
 			$output->setError('Error: '.$e->getMessage().'. File: '.$e->getFile().'. Line: '.$e->getLine());
 			$output->setHttpStatus(400);
