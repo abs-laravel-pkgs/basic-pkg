@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
@@ -113,6 +114,11 @@ class SaveHelper {
 				$input[$relationInputName] = $relationInput;
 			}
 			// if the input is present and we know how to save the relationship type, save it
+			if (isset($relationInput) && is_a($Relation, MorphTo::class) && $afterSave === false) {
+				self::saveMorphToRelation($Model, $Relation, $relationInput);
+				$input[$relationInputName] = $relationInput;
+			}
+			// if the input is present and we know how to save the relationship type, save it
 			if(isset($relationInput)) {
 				if (is_a($Relation, BelongsToMany::class) && $afterSave === true) {
 					self::saveBelongsToManyRelation($Model, $Relation, $relationInput);
@@ -177,7 +183,8 @@ class SaveHelper {
 	 * @param  BelongsTo  $Relation
 	 * @param  mixed  $relationInput  array = save relation; false = remove relation
 	 */
-	public static function saveBelongsToRelation(BaseModel $Model, BelongsTo $Relation, & $relationInput) {
+	public static function saveBelongsToRelation(BaseModel $Model, BelongsTo $Relation, & $relationInput): void
+	{
 		$foreignKey = $Relation->getForeignKeyName();
 		$otherKeyName = $Relation->getOwnerKeyName();
 		if (is_array($relationInput)) {
@@ -186,6 +193,41 @@ class SaveHelper {
 				//dump($relationInput, $foreignKey, $otherKeyName, $otherKeyValue);
 				// related model should be validated already, no need to reload from DB by id
 				$Relation->associate($otherKeyValue);
+			} else {
+				// manually set key since dissociate makes it null
+				$Relation->dissociate();
+//				$Model->setAttribute($foreignKey, 0);
+			}
+		} else if ($relationInput === false) {
+			// manually set key since dissociate makes it null
+			$Relation->dissociate();
+//			$Model->setAttribute($foreignKey, 0);
+		}
+		//$Model->save();
+	}
+
+	/**
+	 * Save $Model's morphTo relationships
+	 *
+	 * Only touches $Model, parent models will be unaffected.
+	 *
+	 * @param  BaseModel  $Model
+	 * @param  BelongsTo  $Relation
+	 * @param  mixed  $relationInput  array = save relation; false = remove relation
+	 */
+	public static function saveMorphToRelation(BaseModel $Model, MorphTo $Relation, & $relationInput): void
+	{
+		$foreignKey = $Relation->getForeignKeyName();
+		$morphType = $Relation->getMorphType();
+		//dd($foreignKey, $morphType);
+		if (is_array($relationInput)) {
+			if (Arr::get($relationInput, 'id')) {
+				$otherKeyValue = Arr::get($relationInput, 'id');
+				$Model->$morphType = Arr::get($relationInput, 'class');
+				$Model->$foreignKey = $otherKeyValue;
+				//dump($relationInput, $foreignKey, $otherKeyName, $otherKeyValue);
+				// related model should be validated already, no need to reload from DB by id
+				//$Relation->associate($otherKeyValue);
 			} else {
 				// manually set key since dissociate makes it null
 				$Relation->dissociate();
@@ -239,7 +281,8 @@ class SaveHelper {
 	 * @param  HasOneOrMany  $Relation
 	 * @param  mixed  $relationInput  array = save relation; false = remove relation
 	 */
-	public static function saveHasOneOrManyRelation(BaseModel $Model, HasOneOrMany $Relation, & $relationInput) {
+	public static function saveHasOneOrManyRelation(BaseModel $Model, HasOneOrMany $Relation, & $relationInput): void
+	{
 		// TODO: DELETE EMPTY ARRAY/FALSE RELATIONS
 		if ($Relation instanceof \Illuminate\Database\Eloquent\Relations\HasOne) {
 			self::saveHasRelation($Model, $Relation, $relationInput);
@@ -259,8 +302,8 @@ class SaveHelper {
 	 * @param  MorphOne  $Relation
 	 * @param  array  $relationInput
 	 */
-	private static function saveMorphOneRelation(BaseModel $Model, MorphOne $Relation, & $relationInput) {
-
+	private static function saveMorphOneRelation(BaseModel $Model, MorphOne $Relation, & $relationInput): void
+	{
 		if ($Model->exists !== true) {
 			$Model->save();
 		}
