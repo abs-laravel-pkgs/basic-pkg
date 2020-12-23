@@ -48,38 +48,40 @@ class Handler extends ExceptionHandler
 	 */
     public function render($request, Exception $e)
     {
-		if ($e instanceof AuthenticationException) {
-			$output = new ApiResponse();
-			$output->setError($e->getMessage());
-			$output->setHttpStatus($e->getHttpStatus());
+		if ($request->route() && in_array('api', $request->route()->middleware(), true)) {
+			if ($e instanceof AuthenticationException) {
+				$output = new ApiResponse();
+				$output->setError($e->getMessage());
+				$output->setHttpStatus(404);
 
-			return $output->response();
+				return $output->response();
+			}
+
+			if ($e instanceof UserFriendlyException) {
+				$output = new ApiResponse();
+				$output->setError($e->getMessages());
+				$output->setHttpStatus($e->getHttpStatus());
+
+				return $output->response();
+			}
+
+			if ($e instanceof ModelNotFoundException) {
+				$output = new ApiResponse();
+				$output->setError('Record not found');
+				$output->setHttpStatus(200);
+
+				return $output->response();
+			}
+
+			if ($e instanceof ValidationException) {
+				$output = new ApiResponse();
+				$output->setError($e);
+				$output->setHttpStatus(400);
+
+				//\Log::info((array)$output);
+				return $output->response();
+			}
 		}
-
-		if ($e instanceof UserFriendlyException) {
-			$output = new ApiResponse();
-			$output->setError($e->getMessages());
-			$output->setHttpStatus($e->getHttpStatus());
-
-			return $output->response();
-		}
-
-		if ($e instanceof ModelNotFoundException) {
-			$output = new ApiResponse();
-			$output->setError('Record not found');
-			$output->setHttpStatus(200);
-
-			return $output->response();
-		}
-
-		if ($e instanceof ValidationException) {
-			$output = new ApiResponse();
-			$output->setError($e);
-			$output->setHttpStatus(400);
-			//\Log::info((array)$output);
-			return $output->response();
-		}
-
 		if (($e instanceof NotFoundHttpException) && strpos($request->path(), 'api/') === 0) {
 			return parent::render($request, $e);
 		}

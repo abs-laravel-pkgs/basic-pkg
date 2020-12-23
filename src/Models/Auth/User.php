@@ -346,6 +346,10 @@ class User extends BaseModel implements
 		return $permissions;
 	}
 
+	public function addresses() {
+		return $this->hasMany('App\Address', 'entity_id')->where('address_of_id', 80);
+	}
+
 	// Getter & Setters --------------------------------------------------------------
 
 	// Static Operations --------------------------------------------------------------
