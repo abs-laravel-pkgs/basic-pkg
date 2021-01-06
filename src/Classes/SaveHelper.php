@@ -81,6 +81,7 @@ class SaveHelper {
 		$modelKeyName = $Model->getKeyName();
 		$input[$modelKeyName] = $Model->$modelKeyName;
 		self::relationIterator($Model, $input, true);
+		//dd(1);
 	}
 
 
@@ -289,7 +290,8 @@ class SaveHelper {
 		} else if ($Relation instanceof \Illuminate\Database\Eloquent\Relations\HasMany) {
 			foreach ($relationInput as &$relationInputItem) {
 				self::saveHasRelation($Model, $Relation, $relationInputItem);
-			}unset($relationInputItem);
+			}
+			unset($relationInputItem);
 		} else if ($Relation instanceof \Illuminate\Database\Eloquent\Relations\MorphOne) {
 			self::saveMorphOneRelation($Model, $Relation, $relationInput);
 		}
@@ -344,10 +346,13 @@ class SaveHelper {
 		}
 		// insert parent model into the input so that it can fill the related model
 		$Model->unsetRelations(); // Temporary(?) fix as objects up the chain won't have attributes necessary for any virtual attributes they employ, thus breaking toArray()
-		$relationInput[$Model->snakeName()] = $Model->toArray();
+		//$relationInput[$Model->snakeName()] = $Model->toArray();
+		$relationInput[Str::snake(str_replace("_id","",$Relation->getForeignKeyName()))] = $Model->toArray();
+
 		$RelationRelated = $Relation->getRelated();
 		$relatedClass = get_class($RelationRelated);
 		$relatedModelKeyName = $RelationRelated->getKeyName(); // Primary key column name
+		//dd($Relation->getForeignKeyName());
 		// related model should be validated already, no need to reload from DB by id
 		if (isset($relationInput[$relatedModelKeyName])) {
 			$RelatedModel = $relatedClass::findOrFail($relationInput[$relatedModelKeyName]);
