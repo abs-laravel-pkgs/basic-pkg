@@ -29,7 +29,7 @@ class AddressesC extends Migration {
 				$table->string('pincode', 10);
 
 				$table->foreign('address_type_id')->references('id')->on('configs')->onUpdate('cascade');
-				$table->foreign('district_id')->references('id')->on('district')->onUpdate('cascade');
+				$table->foreign('district_id')->references('id')->on('districts')->onUpdate('cascade');
 				$table->foreign('sub_district_id')->references('id')->on('sub_districts')->onUpdate('cascade');
 				$table->foreign('city_id')->references('id')->on('cities');
 			});
