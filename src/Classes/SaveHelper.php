@@ -25,7 +25,11 @@ class SaveHelper {
 		$Model = null;
 		DB::transaction(function () use ($modelName, $modelKeyName, $input, &$Model) {
 			if (isset($input[$modelKeyName]) && $input[$modelKeyName]) {
-				$Model = $modelName::find($input[$modelKeyName]);
+				if (method_exists(App::make($modelName), 'forceDelete')) {
+					$Model = $modelName::withTrashed()->find($input[$modelKeyName]);
+				} else {
+					$Model = $modelName::find($input[$modelKeyName]);
+				}
 			} else {
 				$Model = new $modelName();
 			}
@@ -42,16 +46,15 @@ class SaveHelper {
 		}
 	}
 
-	public static function saveModel(BaseModel $Model, & $input) {
+	public static function saveModel(BaseModel $Model, &$input) {
 		if ($Model->exists && Arr::get($input, 'delete')) {
 			self::deleteModel($Model);
-		}
-		else if (!Arr::get($input, 'delete')) {
+		} else if (!Arr::get($input, 'delete')) {
 			$Model->fill($input);
 			$Model->validateAttrs();
 			$Model->validateRelationships($input);
-			if(!Arr::get($input, 'company.id')){
-				if($Model::hasCompany()){
+			if (!Arr::get($input, 'company.id')) {
+				if ($Model::hasCompany()) {
 					$Model->company_id = Auth::user()->company_id;
 				}
 			}
@@ -83,7 +86,6 @@ class SaveHelper {
 		self::relationIterator($Model, $input, true);
 		//dd(1);
 	}
-
 
 	private static function relationIterator(BaseModel $Model, &$input, $afterSave = false) {
 		//dump($Model->fillableRelationships);
@@ -120,17 +122,15 @@ class SaveHelper {
 				$input[$relationInputName] = $relationInput;
 			}
 			// if the input is present and we know how to save the relationship type, save it
-			if(isset($relationInput)) {
+			if (isset($relationInput)) {
 				if (is_a($Relation, BelongsToMany::class) && $afterSave === true) {
 					self::saveBelongsToManyRelation($Model, $Relation, $relationInput);
 					$input[$relationInputName] = $relationInput;
-				}
-				else if (is_a($Relation, HasOneOrMany::class) && $afterSave === true) {
+				} else if (is_a($Relation, HasOneOrMany::class) && $afterSave === true) {
 					self::saveHasOneOrManyRelation($Model, $Relation, $relationInput);
 					$input[$relationInputName] = $relationInput;
 				}
 			}
-
 
 			//if (isset($relationInput) && is_a($Relation, 'Illuminate\Database\Eloquent\Relations\BelongsToMany') && $afterSave === true) {
 			//	self::saveBelongsToManyRelation($Model, $Relation, $relationInput);
@@ -184,8 +184,7 @@ class SaveHelper {
 	 * @param  BelongsTo  $Relation
 	 * @param  mixed  $relationInput  array = save relation; false = remove relation
 	 */
-	public static function saveBelongsToRelation(BaseModel $Model, BelongsTo $Relation, & $relationInput): void
-	{
+	public static function saveBelongsToRelation(BaseModel $Model, BelongsTo $Relation, &$relationInput): void{
 		$foreignKey = $Relation->getForeignKeyName();
 		$otherKeyName = $Relation->getOwnerKeyName();
 		if (is_array($relationInput)) {
@@ -216,8 +215,7 @@ class SaveHelper {
 	 * @param  BelongsTo  $Relation
 	 * @param  mixed  $relationInput  array = save relation; false = remove relation
 	 */
-	public static function saveMorphToRelation(BaseModel $Model, MorphTo $Relation, & $relationInput): void
-	{
+	public static function saveMorphToRelation(BaseModel $Model, MorphTo $Relation, &$relationInput): void{
 		$foreignKey = $Relation->getForeignKeyName();
 		$morphType = $Relation->getMorphType();
 		//dd($foreignKey, $morphType);
@@ -251,8 +249,9 @@ class SaveHelper {
 	 * @param  BelongsToMany  $Relation
 	 * @param  mixed  $relationInput  array = save relation; false = remove relation
 	 */
-	public static function saveBelongsToManyRelation(BaseModel $Model, BelongsToMany $Relation, & $relationInput): void {
-		if (is_array($relationInput) || $relationInput === false) { // if we have an array of related models or just want to clear all
+	public static function saveBelongsToManyRelation(BaseModel $Model, BelongsToMany $Relation, &$relationInput): void {
+		if (is_array($relationInput) || $relationInput === false) {
+			// if we have an array of related models or just want to clear all
 			$syncIds = [];
 			if (is_array($relationInput)) {
 				$RelationRelated = $Relation->getRelated();
@@ -282,8 +281,7 @@ class SaveHelper {
 	 * @param  HasOneOrMany  $Relation
 	 * @param  mixed  $relationInput  array = save relation; false = remove relation
 	 */
-	public static function saveHasOneOrManyRelation(BaseModel $Model, HasOneOrMany $Relation, & $relationInput): void
-	{
+	public static function saveHasOneOrManyRelation(BaseModel $Model, HasOneOrMany $Relation, &$relationInput): void {
 		// TODO: DELETE EMPTY ARRAY/FALSE RELATIONS
 		if ($Relation instanceof \Illuminate\Database\Eloquent\Relations\HasOne) {
 			self::saveHasRelation($Model, $Relation, $relationInput);
@@ -304,8 +302,7 @@ class SaveHelper {
 	 * @param  MorphOne  $Relation
 	 * @param  array  $relationInput
 	 */
-	private static function saveMorphOneRelation(BaseModel $Model, MorphOne $Relation, & $relationInput): void
-	{
+	private static function saveMorphOneRelation(BaseModel $Model, MorphOne $Relation, &$relationInput): void {
 		if ($Model->exists !== true) {
 			$Model->save();
 		}
@@ -339,7 +336,7 @@ class SaveHelper {
 	 * @param  HasOneOrMany  $Relation
 	 * @param  array  $relationInput
 	 */
-	private static function saveHasRelation(BaseModel $Model, HasOneOrMany $Relation, & $relationInput) {
+	private static function saveHasRelation(BaseModel $Model, HasOneOrMany $Relation, &$relationInput) {
 
 		if ($Model->exists !== true) {
 			$Model->save();
@@ -347,7 +344,7 @@ class SaveHelper {
 		// insert parent model into the input so that it can fill the related model
 		$Model->unsetRelations(); // Temporary(?) fix as objects up the chain won't have attributes necessary for any virtual attributes they employ, thus breaking toArray()
 		//$relationInput[$Model->snakeName()] = $Model->toArray();
-		$relationInput[Str::snake(str_replace("_id","",$Relation->getForeignKeyName()))] = $Model->toArray();
+		$relationInput[Str::snake(str_replace("_id", "", $Relation->getForeignKeyName()))] = $Model->toArray();
 
 		$RelationRelated = $Relation->getRelated();
 		$relatedClass = get_class($RelationRelated);

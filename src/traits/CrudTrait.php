@@ -2,6 +2,7 @@
 namespace Abs\BasicPkg\Traits;
 
 use Abs\BasicPkg\Classes\ApiResponse;
+use Abs\BasicPkg\Classes\InputHelper;
 use Abs\BasicPkg\Classes\SaveHelper;
 use Abs\BasicPkg\Services\CrudService;
 use App\Models\BaseModel;
@@ -10,7 +11,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Input;
 use Request as tRequest;
-use Abs\BasicPkg\Classes\InputHelper;
 
 trait CrudTrait {
 
@@ -72,8 +72,6 @@ trait CrudTrait {
 		if (method_exists($modelName, 'appendRelationshipCounts')) {
 			$pageResult->loadCount($modelName::appendRelationshipCounts('index'), Input::get('format'));
 		}
-
-
 
 		if (Input::get('format') === 'csv') {
 			if ($pageResult->count() === 0) {
@@ -151,7 +149,6 @@ trait CrudTrait {
 		if (method_exists($modelName, 'appendRelationshipCounts')) {
 			$Model->loadCount($modelName::appendRelationshipCounts('read'));
 		}
-
 
 		if ($format === 'object') {
 			return [
@@ -249,7 +246,15 @@ trait CrudTrait {
 				$Model = SaveHelper::uberSave($Model->safeName(), $input);
 				$isNew = $oldKey != $Model->$modelKeyName;
 				// need to reload the model so that internal attributes array is filled
-				$Model = $Model::find($Model->$modelKeyName);
+
+				if (method_exists($Model, 'forceDelete')) {
+					// $Model = $modelName::withTrashed()->find($input[$modelKeyName]);
+					$Model = $Model::withTrashed()->find($Model->$modelKeyName);
+				} else {
+					// $Model = $modelName::find($input[$modelKeyName]);
+					$Model = $Model::find($Model->$modelKeyName);
+				}
+
 				if (method_exists($controller, 'afterSave')) {
 					$controller->afterSave($Model, $isNew, $input, $response);
 				}
@@ -363,7 +368,7 @@ trait CrudTrait {
 	 * @param $Model
 	 * @param $input
 	 */
-	public function beforeSave($Model, $input){
+	public function beforeSave($Model, $input) {
 		// DO NOT PLACE CODE IN HERE, THIS IS FOR DOCUMENTATION PURPOSES ONLY
 	}
 
@@ -375,7 +380,7 @@ trait CrudTrait {
 	 * @param $input
 	 * @param  ApiResponse  $response
 	 */
-	public function afterSave($Model, $isNew, $input, ApiResponse $response){
+	public function afterSave($Model, $isNew, $input, ApiResponse $response) {
 		// DO NOT PLACE CODE IN HERE, THIS IS FOR DOCUMENTATION PURPOSES ONLY
 	}
 }

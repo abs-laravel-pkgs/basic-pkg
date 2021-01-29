@@ -25,14 +25,14 @@ use Zizaco\Entrust\Traits\EntrustUserTrait;
 // use App\BaseModel;
 
 class User extends BaseModel implements
-	AuthenticatableContract,
-	AuthorizableContract,
-	CanResetPasswordContract{
+AuthenticatableContract,
+AuthorizableContract,
+CanResetPasswordContract {
 	use HasApiTokens;
 	use Notifiable;
 	use EntrustUserTrait;
 	use \Illuminate\Auth\Authenticatable, CanResetPassword, MustVerifyEmail;
-	use SoftDeletes{
+	use SoftDeletes {
 		SoftDeletes::restore insteadof EntrustUserTrait;
 	}
 	use Authorizable {
@@ -60,7 +60,6 @@ class User extends BaseModel implements
 		'mpin',
 		'invitation_sent',
 	];
-
 
 	protected static $excelColumnRules = [
 		'User Type Name' => [
@@ -616,7 +615,7 @@ class User extends BaseModel implements
 			)
 			->where(function ($q) use ($key) {
 				$q->where('ecode', 'like', $key . '%')
-				->orWhere('name', 'like', $key . '%')
+					->orWhere('name', 'like', $key . '%')
 				;
 			})
 			->where('users.working_outlet_id', Auth::user()->working_outlet_id)
@@ -640,6 +639,18 @@ class User extends BaseModel implements
 				}
 			}
 		});
+	}
+
+	// Query scopes --------------------------------------------------------------
+	public function scopeFilterSearch($query, $term): void {
+		if ($term !== '') {
+			$query->where(function ($query) use ($term) {
+				$query->orWhere('first_name', 'LIKE', '%' . $term . '%');
+				$query->orWhere('last_name', 'LIKE', '%' . $term . '%');
+				$query->orWhere('mobile_number', 'LIKE', '%' . $term . '%');
+				$query->orWhere('email', 'LIKE', '%' . $term . '%');
+			});
+		}
 	}
 
 }
