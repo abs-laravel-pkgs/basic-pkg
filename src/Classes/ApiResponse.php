@@ -133,4 +133,8 @@ class ApiResponse {
 		return Response::json(array('success' => false, 'errors' => array($error), 'messages' => array()), $status);
 	}
 
+	public static function errors(array $errors, $status = 200) {
+		return Response::json(array('success' => false, 'errors' => $errors, 'messages' => array()), $status);
+	}
+
 }
