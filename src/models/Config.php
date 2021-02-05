@@ -10,6 +10,7 @@ class Config extends BaseModel {
 		'config_type_id',
 		'name',
 	];
+	public $timestamps = false;
 
 	// Relations --------------------------------------------------------------
 
