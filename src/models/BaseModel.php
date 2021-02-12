@@ -137,8 +137,13 @@ abstract class BaseModel extends Model {
 		}
 	}
 
-	public function scopeFilterCompany($query, $flage) {
-		return $query->where($this->table . '.company_id', Auth::user()->company_id);
+	public function scopeFilterCompany($query, $company) {
+		if($company){
+			$companyId = $company;
+		}else{
+			$companyId = Auth::user()->company_id;
+		}
+		return $query->where($this->table . '.company_id', $companyId);
 	}
 
 	public function scopeCompany($query, $table_name = null) {
