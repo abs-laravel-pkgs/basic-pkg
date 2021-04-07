@@ -215,9 +215,9 @@ trait CrudTrait {
 		if (method_exists($this, 'alterCrudResponse')) {
 			$this->alterCrudResponse('delete', $response);
 		}
-		if (method_exists($this, 'afterDelete')) {
-			$this->afterDelete($Model);
-		}
+		//if (method_exists($this, 'afterDelete')) {
+		//	$this->afterDelete('delete',$Model);
+		//}
 		return $response->response();
 	}
 
