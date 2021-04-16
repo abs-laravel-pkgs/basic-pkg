@@ -19,7 +19,7 @@ class AddressController extends Controller {
 			]);
 
 		}
-		$address->html_address = $address->formatted_address;
+		$address->html_address = $address->getHtmlMultiline();
 		return response()->json([
 			'success' => true,
 			'address' => $address,
