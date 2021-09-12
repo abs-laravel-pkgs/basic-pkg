@@ -2,6 +2,7 @@
 
 namespace Abs\BasicPkg\Services;
 
+use Abs\BasicPkg\Helpers\AbsStringHelper;
 use DB;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
@@ -92,6 +93,7 @@ class CrudService {
 	}
 
 	public static function sortQuery(Builder $query, $order = null) {
+		// TODO: Figure how to check for columns added through withCount() or selectSub()
 		$orderArray = [];
 		if (is_null($order)) {
 			$order = Request::input('order');
@@ -109,45 +111,25 @@ class CrudService {
 			$table = $model->getTable();
 			$columns = $model->getSchemaColumns();
 
-			foreach ($orderArray as $sort => $dir) {
-				$scopeMethod = 'orderBy' . StringHelper::upper_camel_case($sort);
+			foreach ($orderArray as $order) {
+				$dir = 'asc';
+				if (strpos($order, '-') === 0) {
+					$dir = 'desc';
+					$order = substr($order, 1);
+				}
+				$scopeMethod = 'orderBy' . AbsStringHelper::upper_camel_case($order);
 				if (method_exists($model, 'scope' . $scopeMethod)) {
 					$query->$scopeMethod($dir);
 				}
-				else if (in_array($sort, $columns))
-				{
+				else if (in_array($order, $columns)) {
 					$query->orderByRaw("ISNULL(?) " . $dir, [
-						"{$table}.{$sort}",
+						"{$table}.{$order}",
 						//$dir,
 					]);
-					$query->orderBy("{$table}.{$sort}", $dir);
-				}
-				else {
-					throw new Exception("Invalid sort '{$sort}'");
+					$query->orderBy("{$table}.{$order}", $dir);
 				}
 			}
 		}
-
-
-		//if (!is_array($sorting)) {
-		//	$sorting = Request::input('sorting', []);
-		//}
-		//
-		//foreach ($sorting as $k => $v) {
-		//	else {
-		//		// SR: Not sure what this is supposed to be doing
-		//		//if (is_array($query->getQuery()->columns)) {
-		//		//	foreach ($query->getQuery()->columns as $column) {
-		//		//		$columnString = (string) $column;
-		//		//		if (preg_match('# `?' . $k . '`?$#', $columnString) === 1) {
-		//		//			$q->orderBy($k, $v);
-		//		//			break 2;
-		//		//		}
-		//		//	}
-		//		//}
-		//		throw new Exception("Invalid sort '{$k}'");
-		//	}
-		//}
 	}
 
 	public static function paginateQuery(Builder $query, $page = null, $count = null) {

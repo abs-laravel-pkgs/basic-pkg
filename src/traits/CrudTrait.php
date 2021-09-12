@@ -20,7 +20,6 @@ trait CrudTrait {
 	 * @throws Exception
 	 */
 	public function index() {
-
 		$modelName = $this->model;
 		$reflection = new \ReflectionClass($modelName);
 		$safeName = $reflection->getShortName();

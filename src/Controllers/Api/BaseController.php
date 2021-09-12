@@ -30,6 +30,10 @@ class BaseController extends Controller
 		if (!is_null($errorMessage)) {
 			$response->setError($errorMessage);
 		}
+		
+		if (!is_null($bulkOperationResults)) {
+			$response->setBulkOperationResults($bulkOperationResults);
+		}
 
 		$response->setStatus($status);
 
