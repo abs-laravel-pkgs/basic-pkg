@@ -1,6 +1,7 @@
 <?php
 
 namespace Abs\BasicPkg\Models;
+use Abs\CompanyPkg\Traits\CompanyableTrait;
 use Abs\HelperPkg\Traits\SeederTrait;
 use App\BaseModel;
 use App\City;
@@ -11,6 +12,7 @@ use App\State;
 
 class Address extends BaseModel {
 	use SeederTrait;
+	use CompanyableTrait;
 	public $timestamps = false;
 
 	protected $table = 'addresses';
@@ -22,6 +24,12 @@ class Address extends BaseModel {
 		'city_id',
 		'country_id',
 		'pincode',
+	];
+
+	public $fillableRelationships = [
+		'country',
+		'state',
+		'city',
 	];
 
 	protected static $excelColumnRules = [

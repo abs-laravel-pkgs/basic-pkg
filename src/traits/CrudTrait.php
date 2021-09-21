@@ -8,6 +8,7 @@ use Abs\BasicPkg\Services\CrudService;
 use App\Models\BaseModel;
 use DB;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Input;
 use Request as tRequest;
@@ -238,10 +239,9 @@ trait CrudTrait {
 				if (method_exists($controller, 'beforeSave')) {
 					$controller->beforeSave($Model, $input);
 				}
-				//dd($Model);
 
 				$modelKeyName = $Model->getKeyName();
-				$oldKey = array_get($input, $modelKeyName);
+				$oldKey = Arr::get($input, $modelKeyName);
 				$Model = SaveHelper::uberSave($Model->safeName(), $input);
 				$isNew = $oldKey != $Model->$modelKeyName;
 				// need to reload the model so that internal attributes array is filled
