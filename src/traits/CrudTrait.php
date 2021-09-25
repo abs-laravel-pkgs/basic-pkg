@@ -165,6 +165,39 @@ trait CrudTrait {
 		return $response->response();
 	}
 
+	public function getReadResponseFromModel($Model){
+		$format = '';
+
+		$response = new ApiResponse();
+		$modelName = $Model->safeName();
+		$modelSnakeName = $Model->snakeName();
+
+		// Relationships
+		if (method_exists($modelName, 'relationships')) {
+			$Model->load($modelName::relationships('read'));
+		}
+
+		// Loading Relationship Counts
+		if (method_exists($modelName, 'appendRelationshipCounts')) {
+			$Model->loadCount($modelName::appendRelationshipCounts('read'));
+		}
+
+		if ($format === 'object') {
+			return [
+				'success' => true,
+				$modelSnakeName => $Model,
+			];
+		}
+
+		$response->setData($modelSnakeName, $Model);
+		if (method_exists($this, 'alterCrudResponse')) {
+			$this->alterCrudResponse('read', $response);
+		}
+
+		return $response->response();
+
+	}
+
 	public function create() {
 
 		$model = $this->model;
