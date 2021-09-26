@@ -36,7 +36,7 @@ trait CrudTrait {
 			$count = PHP_INT_MAX;
 			$offset = 0;
 		} else {
-			$count = (int) Input::get('count') ? abs(Input::get('count')) : PHP_INT_MAX;
+			$count = (int) Input::get('limit') ? abs(Input::get('limit')) : PHP_INT_MAX;
 			$offset = (((int) Input::get('page') ? abs(Input::get('page')) : 1) - 1) * $count;
 		}
 
