@@ -55,7 +55,7 @@ class SaveHelper {
 			$Model->validateRelationships($input);
 			if (!Arr::get($input, 'company.id')) {
 				if ($Model::hasCompany()) {
-					$Model->company_id = Auth::user() ? Auth::user()->company_id : null;
+					$Model->company_id = Auth::user() ? Auth::user()->company_id : config('custom.company_id');
 				}
 			}
 

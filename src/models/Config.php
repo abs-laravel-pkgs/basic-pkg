@@ -5,11 +5,15 @@ namespace Abs\BasicPkg\Models;
 use Abs\BasicPkg\Models\BaseModel;
 
 class Config extends BaseModel {
-	protected $fillable = [
-		'id',
-		'config_type_id',
-		'name',
-	];
+  protected $fillable = [
+    'id',
+    'config_type_id',
+    'name',
+  ];
+  protected $visible = [
+    'id',
+    'name',
+  ];
 	public $timestamps = false;
 
 	// Relations --------------------------------------------------------------
