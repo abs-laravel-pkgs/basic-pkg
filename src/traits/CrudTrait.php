@@ -7,6 +7,7 @@ use Abs\BasicPkg\Classes\SaveHelper;
 use Abs\BasicPkg\Services\CrudService;
 use App\Models\BaseModel;
 use DB;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\App;
@@ -279,7 +280,8 @@ trait CrudTrait {
 				$isNew = $oldKey != $Model->$modelKeyName;
 				// need to reload the model so that internal attributes array is filled
 
-				if (method_exists($Model, 'forceDelete')) {
+//        if (method_exists($Model, 'forceDelete')) {
+        if (in_array(SoftDeletes::class, class_uses($Model))) {
 					// $Model = $modelName::withTrashed()->find($input[$modelKeyName]);
 					$Model = $Model::withTrashed()->find($Model->$modelKeyName);
 				} else {
