@@ -1,7 +1,7 @@
 <?php
 namespace Abs\BasicPkg\Controllers\Api;
 
-use ApiResponse;
+use App\Classes\ApiResponse;
 use App\Http\Controllers\Controller;
 use Exception;
 use Illuminate\Http\JsonResponse;
@@ -19,7 +19,7 @@ class BaseController extends Controller
 	 * @return JsonResponse
 	 * @throws Exception
 	 */
-	protected function response($status, array $data = null, $errorMessage = null)
+	protected function response($status, array $data = null, $errorMessage = null, $bulkOperationResults = null)
 	{
 		$response = new ApiResponse();
 
